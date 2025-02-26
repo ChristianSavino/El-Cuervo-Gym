@@ -1,0 +1,38 @@
+﻿@page
+@model El_Cuervo_Gym_Web.Pages.Admin.MenuModel
+@{
+    ViewData["Title"] = "Menú Principal";
+    Layout = "_Layout";
+}
+
+<!DOCTYPE html>
+<html>
+<body>
+    <div class="container mt-5">
+        <h2>Lista de Asistencias Hoy</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nombre Completo</th>
+                    <th>N° Socio</th>
+                    <th>Horario de Ingreso</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var socio in Model.Socios)
+                {
+                    <tr>
+                        <td>@socio.NombreCompleto</td>
+                        <td>@socio.NumeroSocio</td>
+                        <td>@socio.HorarioIngreso</td>
+                        <td>
+                            <a href="/Admin/DetalleSocio/@socio.Id" class="btn btn-dark">Ver Detalles</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

@@ -7,4 +7,9 @@
     <RootNamespace>El_Cuervo_Gym_Web</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Core\User\Domain\" />
+    <Folder Include="Pages\QR\" />
+  </ItemGroup>
+
 </Project>
