@@ -2,11 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 
-namespace El_Cuervo_Gym_Web.Pages.Admin
+namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
 {
-    public class AltaSocioModel : PageModel
+    public class ModificarSocioModel : PageModel
     {
-        public class AltaSocio
+        public class SocioModel
         {
             [Required(ErrorMessage = "El campo Nombre es obligatorio.")]
             public string Nombre { get; set; }
@@ -35,16 +35,32 @@ namespace El_Cuervo_Gym_Web.Pages.Admin
             [Required(ErrorMessage = "El campo Fecha de Subscripción es obligatorio.")]
             [DataType(DataType.Date)]
             public DateTime FechaSubscripcion { get; set; }
+
+            [Required(ErrorMessage = "El campo Estado es obligatorio.")]
+            public string Estado { get; set; }
         }
 
         [BindProperty]
-        public AltaSocio NuevoSocio { get; set; }
+        public SocioModel Socio { get; set; }
 
-        public void OnGet()
+        public bool OperacionExitosa { get; set; }
+
+        public void OnGet(int socioId)
         {
-            NuevoSocio = new AltaSocio
+            // Aquí puedes obtener los datos del socio desde una base de datos o cualquier otra fuente de datos
+            // Ejemplo de datos de socio
+            Socio = new SocioModel
             {
-                FechaSubscripcion = DateTime.Now
+                Nombre = "Juan",
+                Apellido = "Pérez",
+                Documento = 12345678,
+                Telefono = 5551234,
+                ObraSocial = "OSDE",
+                NumeroObraSocial = "987654321",
+                NumeroEmergencia = 5555678,
+                ContactoEmergencia = "María López",
+                FechaSubscripcion = new DateTime(2020, 1, 15),
+                Estado = "Activo"
             };
         }
 
@@ -55,19 +71,10 @@ namespace El_Cuervo_Gym_Web.Pages.Admin
                 return Page();
             }
 
-            // Aquí puedes agregar la lógica para generar el número de socio y guardar el nuevo socio en la base de datos
-            // Ejemplo de generación de número de socio
-            var numeroSocioGenerado = Guid.NewGuid().ToString().Substring(0, 8);
+            // Aquí puedes agregar la lógica para guardar los cambios del socio en la base de datos
 
-            // Guardar el nuevo socio en la base de datos (lógica no implementada)
-
-            return RedirectToPage("/Admin/ListarSocio");
+            OperacionExitosa = true;
+            return Page();
         }
     }
 }
-
-
-
-
-
-

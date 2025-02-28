@@ -1,0 +1,98 @@
+﻿@page "{socioId:int}"
+@model El_Cuervo_Gym_Web.Pages.Admin.Socio.ModificarSocioModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Modificar Socio";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4">Modificar Socio</h2>
+    @if (Model.OperacionExitosa)
+    {
+        <div class="alert alert-success" role="alert">
+            ¡Los cambios se han guardado correctamente! Redirigiendo a la lista de socios...
+        </div>
+        <script>
+            setTimeout(function () {
+                window.location.href = '/Admin/Socio/ListarSocio';
+            }, 3000);
+        </script>
+    }
+    else
+    {
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="post">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="Socio.Nombre">Nombre</label>
+                            <input asp-for="Socio.Nombre" class="form-control" />
+                            <span asp-validation-for="Socio.Nombre" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="Socio.Apellido">Apellido</label>
+                            <input asp-for="Socio.Apellido" class="form-control" />
+                            <span asp-validation-for="Socio.Apellido" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="Socio.Documento">Documento</label>
+                            <input asp-for="Socio.Documento" class="form-control" type="number" />
+                            <span asp-validation-for="Socio.Documento" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="Socio.Telefono">Teléfono</label>
+                            <input asp-for="Socio.Telefono" class="form-control" type="number" />
+                            <span asp-validation-for="Socio.Telefono" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="Socio.ObraSocial">Obra Social</label>
+                            <input asp-for="Socio.ObraSocial" class="form-control" />
+                            <span asp-validation-for="Socio.ObraSocial" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="Socio.NumeroObraSocial">Número de Obra Social</label>
+                            <input asp-for="Socio.NumeroObraSocial" class="form-control" />
+                            <span asp-validation-for="Socio.NumeroObraSocial" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="Socio.NumeroEmergencia">Número de Emergencia</label>
+                            <input asp-for="Socio.NumeroEmergencia" class="form-control" type="number" />
+                            <span asp-validation-for="Socio.NumeroEmergencia" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="Socio.ContactoEmergencia">Contacto de Emergencia</label>
+                            <input asp-for="Socio.ContactoEmergencia" class="form-control" />
+                            <span asp-validation-for="Socio.ContactoEmergencia" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="Socio.FechaSubscripcion">Fecha de Subscripción</label>
+                            <input asp-for="Socio.FechaSubscripcion" class="form-control" type="date" />
+                            <span asp-validation-for="Socio.FechaSubscripcion" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="Socio.Estado">Estado</label>
+                            <select asp-for="Socio.Estado" class="form-control">
+                                <option value="Activo">Activo</option>
+                                <option value="Inactivo">Inactivo</option>
+                            </select>
+                            <span asp-validation-for="Socio.Estado" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-dark">Guardar Cambios</button>
+                </form>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

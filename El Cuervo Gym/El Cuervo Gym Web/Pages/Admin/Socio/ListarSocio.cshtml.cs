@@ -3,7 +3,7 @@ using El_Cuervo_Gym_Web.Core.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace El_Cuervo_Gym_Web.Pages.Admin
+namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
 {
     public class ListarSocioModel : PageModel
     {

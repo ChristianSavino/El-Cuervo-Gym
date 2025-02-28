@@ -1,0 +1,20 @@
+﻿@page "{cobranzaId:int}"
+@model El_Cuervo_Gym_Web.Pages.Admin.Cobranza.BajaCobranzaModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Confirmación de Baja de Cobranza";
+}
+
+<div class="container mt-5">
+    <div class="alert alert-success" role="alert">
+        La cobranza ha sido dada de baja correctamente. Redirigiendo a la lista de cobranzas...
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        setTimeout(function () {
+            window.location.href = '/Admin/Cobranza/ListarCobranzas';
+        }, 3000);
+    </script>
+}

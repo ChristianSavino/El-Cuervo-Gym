@@ -1,0 +1,17 @@
+﻿@page "{siguienteCuota:datetime}"
+@model El_Cuervo_Gym_Web.Pages.Admin.Cobranza.Responses.CobranzaCorrectaModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Cobranza Correcta";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4">Cobranza Realizada Correctamente</h2>
+    <div class="alert alert-success" role="alert">
+        <h4 class="alert-heading">¡Éxito!</h4>
+        <p>La cobranza ha sido registrada correctamente.</p>
+        <hr>
+        <p class="mb-0"><strong>Fecha de la Siguiente Cuota:</strong> @Model.SiguienteCuota.ToString("dd/MM/yyyy")</p>
+    </div>
+    <a href="/Admin/Menu" class="btn btn-dark">Volver al Menú</a>
+</div>

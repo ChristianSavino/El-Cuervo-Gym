@@ -1,0 +1,47 @@
+﻿@page "{socioId:int}"
+@model El_Cuervo_Gym_Web.Pages.Admin.Cobranza.AltaCobranzaModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Alta de Cobranza";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4">Alta de Cobranza</h2>
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="post">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="Cobranza.Nombre">Nombre</label>
+                        <input asp-for="Cobranza.Nombre" class="form-control" readonly />
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="Cobranza.Documento">Documento</label>
+                        <input asp-for="Cobranza.Documento" class="form-control" readonly />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="Cobranza.NumeroSocio">Número de Socio</label>
+                        <input asp-for="Cobranza.NumeroSocio" class="form-control" readonly />
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="Cobranza.FechaPago">Fecha de Pago</label>
+                        <input asp-for="Cobranza.FechaPago" class="form-control" type="date" readonly />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="Cobranza.Monto">Monto</label>
+                        <input asp-for="Cobranza.Monto" class="form-control" readonly />
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-dark">Registrar Cobranza</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

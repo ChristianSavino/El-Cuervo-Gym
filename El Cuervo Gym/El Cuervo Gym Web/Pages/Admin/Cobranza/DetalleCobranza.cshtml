@@ -1,0 +1,32 @@
+﻿@page "{cobranzaId:int}"
+@model El_Cuervo_Gym_Web.Pages.Admin.Cobranza.DetalleCobranzaModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Detalles de la Cobranza";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4">Detalles de la Cobranza</h2>
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Cobranza de @Model.Cobranza.Nombre</h5>
+            <p class="card-text"><strong>Documento:</strong> @Model.Cobranza.Documento</p>
+            <p class="card-text"><strong>Número de Socio:</strong> @Model.Cobranza.NumeroSocio</p>
+            <p class="card-text"><strong>Fecha de Pago:</strong> @Model.Cobranza.FechaPago.ToString("dd/MM/yyyy")</p>
+            <p class="card-text"><strong>Monto:</strong> @Model.Cobranza.Monto.ToString("C")</p>
+            <div class="mt-4">
+                <button class="btn btn-danger" onclick="confirmarBaja(@Model.Cobranza.Id)">Dar de Baja</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function confirmarBaja(cobranzaId) {
+            if (confirm("¿Estás seguro de que deseas dar de baja esta cobranza?")) {
+                window.location.href = '/Admin/Cobranza/BajaCobranza/' + cobranzaId;
+            }
+        }
+    </script>
+}

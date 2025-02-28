@@ -1,0 +1,19 @@
+﻿@page "{socioId:int}"
+@model El_Cuervo_Gym_Web.Pages.Admin.Socio.DarDeBajaSocioModel
+@{
+    Layout = "_Layout";
+}
+
+<div class="container mt-5">
+    <div class="alert alert-success" role="alert">
+        El socio ha sido dado de baja correctamente. Redirigiendo a la lista de socios...
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        setTimeout(function () {
+            window.location.href = '/Admin/Socio/ListarSocio';
+        }, 3000);
+    </script>
+}

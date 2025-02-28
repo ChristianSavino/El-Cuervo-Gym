@@ -1,5 +1,5 @@
 ﻿@page "{socioId:int}"
-@model El_Cuervo_Gym_Web.Pages.Admin.DetalleSocioModel
+@model El_Cuervo_Gym_Web.Pages.Admin.Socio.DetalleSocioModel
 @{
     ViewData["Title"] = "Detalles del Socio";
     Layout = "_Layout";
@@ -18,10 +18,11 @@
             <p class="card-text"><strong>Contacto de Emergencia:</strong> @Model.Socio.ContactoEmergencia</p>
             <p class="card-text"><strong>Fecha de Subscripción:</strong> @Model.Socio.FechaSubscripcion.ToString("dd/MM/yyyy")</p>
             <p class="card-text"><strong>Próximo Vencimiento de Cuota:</strong> @Model.Socio.ProximoVencimientoCuota.ToString("dd/MM/yyyy")</p>
+            <p class="card-text"><strong>Estado:</strong> @Model.Socio.Estado</p>
             <div class="mt-4">
-                <a href="/Admin/ModificarSocio?socioId=@Model.Socio.Id" class="btn btn-primary">Modificar</a>
-                <a href="/Admin/DarDeBajaSocio?socioId=@Model.Socio.Id" class="btn btn-danger">Dar de Baja</a>
-                <a href="/Admin/EfectuarCobranza?socioId=@Model.Socio.Id" class="btn btn-success">Efectuar Cobranza</a>
+                <a href="/Admin/Socio/ModificarSocio/@Model.Socio.Id" class="btn btn-primary">Modificar</a>
+                <button class="btn btn-danger" onclick="confirmarBaja(@Model.Socio.Id)">Dar de Baja</button>
+                <a href="/Admin/Cobranza/AltaCobranza/@Model.Socio.Id" class="btn btn-success">Efectuar Cobranza</a>
             </div>
         </div>
     </div>
@@ -44,3 +45,13 @@
         </tbody>
     </table>
 </div>
+
+@section Scripts {
+    <script>
+        function confirmarBaja(socioId) {
+            if (confirm("¿Estás seguro de que deseas dar de baja a este socio?")) {
+                window.location.href = '/Admin/Socio/DarDeBajaSocio/' + socioId;
+            }
+        }
+    </script>
+}

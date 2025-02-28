@@ -7,14 +7,13 @@
     <title>@ViewData["Title"] - El Cuervo Gym</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/El_Cuervo_Gym_Web.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <a class="navbar-brand" href="/Admin/Menu">
-                <img src="~/lib/images/Cuervo Gym.png" alt="El Cuervo Gym" style="height: 30px; width: 30px;" class="d-inline-block align-top" />
+                <img src="~/images/Cuervo Gym.png" alt="El Cuervo Gym" style="height: 30px; width: 30px;" class="d-inline-block align-top" />
                 El Cuervo Gym
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -27,10 +26,10 @@
                             Socio
                         </a>
                         <div class="dropdown-menu" aria-labelledby="usuarioDropdown">
-                            <a class="dropdown-item" href="/Admin/AltaSocio">Alta</a>
+                            <a class="dropdown-item" href="/Admin/Socio/AltaSocio">Alta</a>
                             @* <a class="dropdown-item" href="#">Baja</a> *@
                             @* <a class="dropdown-item" href="#">Modificar</a> *@
-                            <a class="dropdown-item" href="/Admin/ListarSocio">Listar</a>
+                            <a class="dropdown-item" href="/Admin/Socio/ListarSocio">Listar</a>
                         </div>
                     </li>
                     <li class="nav-item dropdown">
@@ -38,9 +37,9 @@
                             Cobranza
                         </a>
                         <div class="dropdown-menu" aria-labelledby="cobranzaDropdown">
-                            <a class="dropdown-item" href="#">Cobrar Cuota</a>
-                            <a class="dropdown-item" href="#">Dar de Baja</a>
-                            <a class="dropdown-item" href="#">Listar Pagos</a>
+@*                             <a class="dropdown-item" href="#">Cobrar Cuota</a> *@
+@*                             <a class="dropdown-item" href="#">Dar de Baja</a> *@
+                            <a class="dropdown-item" href="/Admin/Cobranza/ListarCobranzas">Listar Pagos</a>
                         </div>
                     </li>
                 </ul>
