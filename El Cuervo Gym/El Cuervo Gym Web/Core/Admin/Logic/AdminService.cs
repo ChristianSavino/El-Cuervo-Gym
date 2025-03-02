@@ -3,6 +3,7 @@ using El_Cuervo_Gym_Web.Core.Admin.Domain;
 using El_Cuervo_Gym_Web.Core.Cobranza.Logic;
 using El_Cuervo_Gym_Web.Core.Socio.Domain;
 using El_Cuervo_Gym_Web.Core.Socio.Logic;
+using El_Cuervo_Gym_Web.Core.Utils;
 
 namespace El_Cuervo_Gym_Web.Core.Admin.Logic
 {
@@ -43,12 +44,7 @@ namespace El_Cuervo_Gym_Web.Core.Admin.Logic
         {
             try
             {
-                var proximaCuotaPago = socio.FechaSubscripcion.AddMonths(1);
-                if(proximaCuotaPago.Date < DateTime.Now.Date)
-                {
-                    proximaCuotaPago = new DateTime(DateTime.Now.Year, DateTime.Now.Month, socio.FechaSubscripcion.Day);
-                    proximaCuotaPago = proximaCuotaPago.AddMonths(1);
-                }
+               var proximaCuotaPago = Helper.ObtenerProximoVencimientoDeCuota(socio.FechaSubscripcion);
 
                 socio.ProximoVencimientoCuota = proximaCuotaPago;
 
@@ -66,6 +62,14 @@ namespace El_Cuervo_Gym_Web.Core.Admin.Logic
 
                 throw;
             }
+        }
+
+        public async Task<bool> ActualizarSocio(DatosSocio socio)
+        {
+            var proximaCuotaPago = Helper.ObtenerProximoVencimientoDeCuota(socio.FechaSubscripcion);
+            socio.ProximoVencimientoCuota = proximaCuotaPago;
+
+            return await _socioService.ActualizarSocio(socio);
         }
     }
 }

@@ -2,9 +2,16 @@
 {
     public static class Helper
     {
-        public static bool IsSessionAdmin(HttpContext httpContext)
+        public static DateTime ObtenerProximoVencimientoDeCuota(DateTime fechaSubscripcion)
         {
-            return httpContext.Session.GetString("Admin") != null;
+            var proximaCuotaPago = fechaSubscripcion.AddMonths(1);
+            if (proximaCuotaPago.Date < DateTime.Now.Date)
+            {
+                proximaCuotaPago = new DateTime(DateTime.Now.Year, DateTime.Now.Month, fechaSubscripcion.Day);
+                proximaCuotaPago = proximaCuotaPago.AddMonths(1);
+            }
+
+            return proximaCuotaPago;
         }
     }
 }

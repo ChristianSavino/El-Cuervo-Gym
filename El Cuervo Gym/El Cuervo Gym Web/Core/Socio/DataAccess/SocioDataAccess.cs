@@ -105,5 +105,45 @@ namespace El_Cuervo_Gym_Web.Core.Socio.DataAccess
 
             return await _connection.QuerySingleAsync<DatosSocio>(query, parameters);
         }
+
+        public async Task<bool> ActualizarSocio(DatosSocio socio)
+        {
+            var query = @"
+                SELECT Soc.ActualizarSocio(
+                    @Id,
+                    @Nombre,
+                    @Apellido,
+                    @Documento,
+                    @Telefono,
+                    @ObraSocial,
+                    @NumeroObraSocial,
+                    @NumeroEmergencia,
+                    @ContactoEmergencia,
+                    @FechaSubscripcion,
+                    @ProximoVencimientoCuota,
+                    @Estado,
+                    @IdAdmin
+                )";
+
+            var parameters = new
+            {
+                socio.Id,
+                socio.Nombre,
+                socio.Apellido,
+                socio.Documento,
+                socio.Telefono,
+                socio.ObraSocial,
+                socio.NumeroObraSocial,
+                socio.NumeroEmergencia,
+                socio.ContactoEmergencia,
+                socio.FechaSubscripcion,
+                socio.ProximoVencimientoCuota,
+                socio.Estado,
+                socio.IdAdmin
+            };
+
+            var affectedRows = await _connection.ExecuteScalarAsync<int>(query, parameters);
+            return affectedRows > 0;
+        }
     }
 }

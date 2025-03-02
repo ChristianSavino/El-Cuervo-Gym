@@ -23,6 +23,7 @@
         <div class="card mb-4">
             <div class="card-body">
                 <form method="post">
+                    <input type="hidden" name="Socio.Id" value="@Model.Socio.Id" />
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label asp-for="Socio.Nombre">Nombre</label>
@@ -81,7 +82,7 @@
                             <label asp-for="Socio.Estado">Estado</label>
                             <select asp-for="Socio.Estado" class="form-control">
                                 <option value="Activo">Activo</option>
-                                <option value="Inactivo">Inactivo</option>
+                                <option value="Baja">Baja</option>
                             </select>
                             <span asp-validation-for="Socio.Estado" class="text-danger"></span>
                         </div>

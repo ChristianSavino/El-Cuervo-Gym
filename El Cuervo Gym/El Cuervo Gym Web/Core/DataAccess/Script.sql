@@ -298,6 +298,47 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP FUNCTION IF EXISTS Soc.ActualizarSocio;
+CREATE OR REPLACE FUNCTION Soc.ActualizarSocio(
+    p_id INT,
+    p_nombre VARCHAR,
+    p_apellido VARCHAR,
+    p_documento INT,
+    p_telefono INT,
+    p_obra_social VARCHAR,
+    p_numero_obra_social VARCHAR,
+    p_numero_emergencia INT,
+    p_contacto_emergencia VARCHAR,
+    p_fecha_subscripcion TIMESTAMP,
+    p_proximo_vencimiento_cuota TIMESTAMP,
+    p_estado INT,
+    p_id_admin INT
+)
+RETURNS INT AS $$
+DECLARE
+    v_affected_rows INT;
+BEGIN
+    UPDATE Soc.Socio
+    SET
+        Nombre = p_nombre,
+        Apellido = p_apellido,
+        Documento = p_documento,
+        Telefono = p_telefono,
+        ObraSocial = p_obra_social,
+        NumeroObraSocial = p_numero_obra_social,
+        NumeroEmergencia = p_numero_emergencia,
+        ContactoEmergencia = p_contacto_emergencia,
+        FechaSubscripcion = p_fecha_subscripcion,
+        ProximoVencimientoCuota = p_proximo_vencimiento_cuota,
+        Estado = p_estado,
+        IdAdmin = p_id_admin
+    WHERE Id = p_id;
+
+    GET DIAGNOSTICS v_affected_rows = ROW_COUNT;
+    RETURN v_affected_rows;
+END;
+$$ LANGUAGE plpgsql;
+
 -- FUNC PAGO
 
 DROP FUNCTION IF EXISTS Soc.InsertarPago;

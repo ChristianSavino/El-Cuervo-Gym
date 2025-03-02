@@ -46,5 +46,10 @@ namespace El_Cuervo_Gym_Web.Core.Socio.Logic
 
             return socio;
         }
+
+        public async Task<bool> ActualizarSocio(DatosSocio socio)
+        {
+            return await _socioDataAccess.ActualizarSocio(socio);
+        }
     }
 }

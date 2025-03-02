@@ -1,13 +1,30 @@
+using El_Cuervo_Gym_Web.Core.Admin.Domain;
+using El_Cuervo_Gym_Web.Core.Admin.Logic;
+using El_Cuervo_Gym_Web.Core.Socio.Domain;
+using El_Cuervo_Gym_Web.Core.Socio.Logic;
+using El_Cuervo_Gym_Web.Core.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 
 namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
 {
     public class ModificarSocioModel : PageModel
     {
+        private readonly IAdminService _adminService;
+        private readonly ISocioService _socioService;
+
+        public ModificarSocioModel(IAdminService adminService, ISocioService socioService)
+        {
+            _socioService = socioService;
+            _adminService = adminService;
+        }   
+
         public class SocioModel
         {
+            public int Id { get; set; }
+            
             [Required(ErrorMessage = "El campo Nombre es obligatorio.")]
             public string Nombre { get; set; }
 
@@ -37,7 +54,7 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
             public DateTime FechaSubscripcion { get; set; }
 
             [Required(ErrorMessage = "El campo Estado es obligatorio.")]
-            public string Estado { get; set; }
+            public Estado Estado { get; set; }
         }
 
         [BindProperty]
@@ -45,35 +62,52 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
 
         public bool OperacionExitosa { get; set; }
 
-        public void OnGet(int socioId)
+        public async Task OnGet(int socioId)
         {
-            // Aquí puedes obtener los datos del socio desde una base de datos o cualquier otra fuente de datos
-            // Ejemplo de datos de socio
+            var socio = await _socioService.ObtenerSocioPorId(socioId);
+
             Socio = new SocioModel
             {
-                Nombre = "Juan",
-                Apellido = "Pérez",
-                Documento = 12345678,
-                Telefono = 5551234,
-                ObraSocial = "OSDE",
-                NumeroObraSocial = "987654321",
-                NumeroEmergencia = 5555678,
-                ContactoEmergencia = "María López",
-                FechaSubscripcion = new DateTime(2020, 1, 15),
-                Estado = "Activo"
+                Id = socio.Id,
+                Nombre = socio.Nombre,
+                Apellido = socio.Apellido,
+                Documento = socio.Documento,
+                Telefono = socio.Telefono,
+                ObraSocial = socio.ObraSocial,
+                NumeroObraSocial = socio.NumeroObraSocial,
+                NumeroEmergencia = socio.NumeroEmergencia,
+                ContactoEmergencia = socio.ContactoEmergencia,
+                FechaSubscripcion = socio.FechaSubscripcion,
+                Estado = socio.Estado
             };
         }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPost()
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            // Aquí puedes agregar la lógica para guardar los cambios del socio en la base de datos
+            var admin = JsonConvert.DeserializeObject<DatosAdminLogin>(HttpContext.Session.GetString("Admin"));
 
-            OperacionExitosa = true;
+            var socio = new DatosSocio
+            {
+                Id = Socio.Id,
+                Nombre = Socio.Nombre,
+                Apellido = Socio.Apellido,
+                Documento = Socio.Documento,
+                Telefono = Socio.Telefono,
+                ObraSocial = Socio.ObraSocial,
+                NumeroObraSocial = Socio.NumeroObraSocial,
+                NumeroEmergencia = Socio.NumeroEmergencia,
+                ContactoEmergencia = Socio.ContactoEmergencia,
+                FechaSubscripcion = Socio.FechaSubscripcion,
+                Estado = Socio.Estado,
+                IdAdmin = admin.Id
+            };
+
+            OperacionExitosa = await _adminService.ActualizarSocio(socio);
             return Page();
         }
     }
