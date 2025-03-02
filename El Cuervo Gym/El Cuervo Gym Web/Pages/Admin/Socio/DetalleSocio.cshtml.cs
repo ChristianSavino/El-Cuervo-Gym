@@ -1,10 +1,17 @@
-using Microsoft.AspNetCore.Mvc;
+using El_Cuervo_Gym_Web.Core.Socio.Logic;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
 {
     public class DetalleSocioModel : PageModel
     {
+        private readonly ISocioService _socioService;
+
+        public DetalleSocioModel(ISocioService socioService)
+        {
+            _socioService = socioService;
+        }
+
         public class Pago
         {
             public DateTime FechaPago { get; set; }
@@ -30,29 +37,30 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
 
         public SocioModel Socio { get; set; }
 
-        public void OnGet(int socioId)
+        public async Task OnGet(int socioId)
         {
             // Aquí puedes obtener los datos del socio desde una base de datos o cualquier otra fuente de datos
+            var socio = await _socioService.ObtenerSocioConPagosPorId(socioId);
+
             Socio = new SocioModel
             {
-                Id = socioId,
-                Nombre = "Juan",
-                Apellido = "Pérez",
-                Documento = "12345678",
-                Telefono = "555-1234",
-                ObraSocial = "OSDE",
-                NumeroObraSocial = "987654321",
-                NumeroEmergencia = "555-5678",
-                ContactoEmergencia = "María López",
-                FechaSubscripcion = new DateTime(2020, 1, 15),
-                ProximoVencimientoCuota = new DateTime(2023, 12, 15),
-                Estado = "Activo",
-                UltimosPagos = new List<Pago>
+                Id = socio.Id,
+                Nombre = socio.Nombre,
+                Apellido = socio.Apellido,
+                Documento = socio.Documento.ToString(),
+                Telefono = socio.Telefono.ToString(),
+                ObraSocial = socio.ObraSocial,
+                NumeroObraSocial = socio.NumeroObraSocial,
+                NumeroEmergencia = socio.NumeroEmergencia.ToString(),
+                ContactoEmergencia = socio.ContactoEmergencia,
+                FechaSubscripcion = socio.FechaSubscripcion,
+                ProximoVencimientoCuota = socio.ProximoVencimientoCuota,
+                Estado = socio.Estado.ToString(),
+                UltimosPagos = socio.UltimosPagos.Select(p => new Pago
                 {
-                    new Pago { FechaPago = new DateTime(2023, 11, 15), Monto = 1000 },
-                    new Pago { FechaPago = new DateTime(2023, 10, 15), Monto = 1000 },
-                    new Pago { FechaPago = new DateTime(2023, 9, 15), Monto = 1000 }
-                }
+                    FechaPago = p.FechaPago,
+                    Monto = p.Monto
+                }).ToList()
             };
         }
     }

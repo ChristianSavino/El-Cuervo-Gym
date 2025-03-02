@@ -1,5 +1,5 @@
-using El_Cuervo_Gym_Web.Core.Admin.Domain;
-using El_Cuervo_Gym_Web.Core.Utils;
+using El_Cuervo_Gym_Web.Core.Socio.Domain;
+using El_Cuervo_Gym_Web.Core.Socio.Logic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -7,6 +7,13 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
 {
     public class ListarSocioModel : PageModel
     {
+        private readonly ISocioService _socioService;
+
+        public ListarSocioModel(ISocioService socioService)
+        {
+            _socioService = socioService;
+        }
+
         public class FiltroModel
         {
             public string Nombre { get; set; }
@@ -20,32 +27,42 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
 
         [BindProperty(SupportsGet = true)]
         public FiltroModel Filtro { get; set; }
-        public List<DatosSocio> SociosAtrasados { get; set; }
+        public List<DatosSocio> Socios { get; set; }
 
-        public void OnGet()
+        public async Task OnGet()
         {
-            if (!Helper.IsSessionAdmin(HttpContext))
+            try
             {
-                RedirectToPage("/Admin/Login");
+                if (CheckIfFiltroIsEmpty())
+                {
+                    Filtro = new FiltroModel()
+                    {
+                        CuotasVencidas = false,
+                        IncluirDadosDeBaja = false,
+                        FechaInicio = DateTime.Now.AddDays(-7),
+                        FechaFin = DateTime.Now.AddDays(1)
+                    };
+                }
+                else
+                {
+                    Filtro.FechaFin = Filtro.FechaFin?.AddDays(1);
+                }
+
+                var socios = await _socioService.ObtenerSocios(Filtro);
+                Socios = socios.ToList();
+
+                Filtro.FechaFin = Filtro.FechaFin?.AddDays(-1);
             }
-
-            var todosLosSocios = new List<DatosSocio>
+            catch (Exception)
             {
-                new DatosSocio { Id = 1, Nombre = "Juan Pérez", Documento = 12345678, FechaSubscripcion = new DateTime(2020, 1, 15), ProximoVencimientoCuota = new DateTime(2023, 11, 15) },
-                new DatosSocio { Id = 2, Nombre = "María López", Documento = 87654321, FechaSubscripcion = new DateTime(2021, 5, 20), ProximoVencimientoCuota = new DateTime(2023, 10, 15) },
-                new DatosSocio { Id = 3, Nombre = "Carlos García", Documento = 11223344, FechaSubscripcion = new DateTime(2019, 3, 10), ProximoVencimientoCuota = new DateTime(2023, 9, 15) }
-            };
 
-            // Filtrar socios atrasados
-            SociosAtrasados = todosLosSocios
-                .Where(s => !Filtro.CuotasVencidas || s.ProximoVencimientoCuota < DateTime.Now)
-                .Where(s => !Filtro.IncluirDadosDeBaja || s.Estado != Estado.Baja)
-                .Where(s => string.IsNullOrEmpty(Filtro.Nombre) || s.Nombre.Contains(Filtro.Nombre, StringComparison.OrdinalIgnoreCase))
-                .Where(s => string.IsNullOrEmpty(Filtro.Documento) || s.Documento.ToString() == Filtro.Documento)
-                .Where(s => string.IsNullOrEmpty(Filtro.NumeroSocio) || s.Id.ToString() == Filtro.NumeroSocio)
-                .Where(s => !Filtro.FechaInicio.HasValue || s.FechaSubscripcion >= Filtro.FechaInicio.Value)
-                .Where(s => !Filtro.FechaFin.HasValue || s.FechaSubscripcion <= Filtro.FechaFin.Value)
-                .ToList();
+                throw;
+            }
+        }
+
+        private bool CheckIfFiltroIsEmpty()
+        {
+            return Filtro.Nombre == null && Filtro.Documento == null && Filtro.NumeroSocio == null && Filtro.FechaInicio == null && Filtro.FechaFin == null;
         }
     }
 }

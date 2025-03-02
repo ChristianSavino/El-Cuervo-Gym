@@ -18,11 +18,6 @@ namespace El_Cuervo_Gym_Web.Pages.Admin
 
         public IActionResult OnGet()
         {
-            if (!Helper.IsSessionAdmin(HttpContext))
-            {
-                return RedirectToPage("/Admin/Login");
-            }
-
             Socios = new List<SocioIngreso>
             {
                 new SocioIngreso { NombreCompleto = "Juan Pérez", NumeroSocio = "12345", HorarioIngreso = "08:00 AM", Id = 1 },

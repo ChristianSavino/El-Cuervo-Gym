@@ -1,11 +1,23 @@
+using El_Cuervo_Gym_Web.Core.Admin.Domain;
+using El_Cuervo_Gym_Web.Core.Admin.Logic;
+using El_Cuervo_Gym_Web.Core.Socio.Domain;
+using El_Cuervo_Gym_Web.Core.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 
 namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
 {
     public class AltaSocioModel : PageModel
     {
+        private readonly IAdminService _adminService;
+
+        public AltaSocioModel(IAdminService adminService)
+        {
+            _adminService = adminService;
+        }
+
         public class AltaSocio
         {
             [Required(ErrorMessage = "El campo Nombre es obligatorio.")]
@@ -48,25 +60,40 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
             };
         }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPost()
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            // Aquí puedes agregar la lógica para generar el número de socio y guardar el nuevo socio en la base de datos
-            // Ejemplo de generación de número de socio
-            var numeroSocioGenerado = 1;
+            try
+            {
+                var admin = JsonConvert.DeserializeObject<DatosAdminLogin>(HttpContext.Session.GetString("Admin"));
 
-            // Guardar el nuevo socio en la base de datos (lógica no implementada)
+                var datosSocio = new DatosSocio
+                {
+                    Nombre = NuevoSocio.Nombre,
+                    Apellido = NuevoSocio.Apellido,
+                    Documento = NuevoSocio.Documento,
+                    Telefono = NuevoSocio.Telefono,
+                    ObraSocial = NuevoSocio.ObraSocial,
+                    NumeroObraSocial = NuevoSocio.NumeroObraSocial,
+                    NumeroEmergencia = NuevoSocio.NumeroEmergencia,
+                    ContactoEmergencia = NuevoSocio.ContactoEmergencia,
+                    FechaSubscripcion = NuevoSocio.FechaSubscripcion,
+                    Estado = Estado.Activo,
+                    IdAdmin = admin.Id
+                };
 
-            // Redirigir a la página de confirmación
-            return RedirectToPage("/Admin/Socio/Responses/AltaCorrecta", new { nombreCompleto = $"{NuevoSocio.Nombre} {NuevoSocio.Apellido}", documento = NuevoSocio.Documento, numeroSocio = numeroSocioGenerado });
+                var socio = await _adminService.InsertarSocio(datosSocio);
+
+                return RedirectToPage("/Admin/Socio/Responses/AltaCorrecta", new { nombreCompleto = $"{socio.Nombre} {socio.Apellido}", documento = socio.Documento, numeroSocio = socio.Id });
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }
-
-
-
-

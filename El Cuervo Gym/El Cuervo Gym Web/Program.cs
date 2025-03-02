@@ -1,14 +1,9 @@
+using El_Cuervo_Gym_Web.Configuration;
+using El_Cuervo_Gym_Web.Core.DataAccess;
+
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddRazorPages();
-
-builder.Services.AddDistributedMemoryCache();
-builder.Services.AddSession(options =>
-{
-    options.IdleTimeout = TimeSpan.FromMinutes(30);
-    options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true;
-});
+Bootstrapper.ConfigureServices(builder.Services, builder.Configuration);
 
 var app = builder.Build();
 
@@ -29,5 +24,11 @@ app.UseAuthorization();
 app.UseSession();
 
 app.MapRazorPages();
+
+using (var scope = app.Services.CreateScope())
+{
+    var connection = scope.ServiceProvider.GetRequiredService<IConnection>();
+    await connection.ExecuteSqlScriptAsync("Core/DataAccess/Script.sql");
+}
 
 app.Run();

@@ -1,23 +1,19 @@
 ﻿@page "{nombreCompleto}/{documento:int}/{numeroSocio:int}"
 @model El_Cuervo_Gym_Web.Pages.Admin.Socio.Responses.AltaCorrectaModel
 @{
-    Layout = "_Layout";
+    Layout = "_LayoutAdmin";
     ViewData["Title"] = "Alta Correcta";
 }
 
 <div class="container mt-5">
     <h2 class="mb-4">Alta de Socio Realizada Correctamente</h2>
-    <div class="card mb-4">
-        <div class="card-body">
-            <div class="alert alert-success" role="alert">
-                <h4 class="alert-heading">¡Éxito!</h4>
-                <p>El socio ha sido dado de alta correctamente.</p>
-                <hr>
-                <p class="mb-0"><strong>Nombre Completo:</strong> @Model.NombreCompleto</p>
-                <p class="mb-0"><strong>DNI:</strong> @Model.Documento</p>
-                <p class="mb-0"><strong>Número de Socio:</strong> @Model.NumeroSocio</p>
-            </div>
-            <a href="/Admin/Socio/ListarSocio" class="btn btn-dark">Volver a la Lista de Socios</a>
-        </div>
+    <div class="alert alert-success" role="alert">
+        <h4 class="alert-heading">¡Éxito!</h4>
+        <p>El socio ha sido registrado correctamente.</p>
+        <hr>
+        <p class="mb-0"><strong>Nombre Completo:</strong> @Model.NombreCompleto</p>
+        <p class="mb-0"><strong>Documento:</strong> @Model.Documento</p>
+        <p class="mb-0"><strong>Número de Socio:</strong> @Model.NumeroSocio</p>
     </div>
+    <a href="/Admin/Menu" class="btn btn-dark">Volver al Menú</a>
 </div>

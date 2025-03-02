@@ -1,7 +1,7 @@
 ﻿using El_Cuervo_Gym_Web.Core.Cobranza.Domain;
 using El_Cuervo_Gym_Web.Core.Utils;
 
-namespace El_Cuervo_Gym_Web.Core.Admin.Domain
+namespace El_Cuervo_Gym_Web.Core.Socio.Domain
 {
     public class DatosSocio
     {
@@ -18,5 +18,7 @@ namespace El_Cuervo_Gym_Web.Core.Admin.Domain
         public DateTime ProximoVencimientoCuota { get; set; }
         public List<Pago> UltimosPagos { get; set; }
         public Estado Estado { get; set; }
+        public int IdAdmin { get; set; }
+        public string PagosJson { get; set; }
     }
 }
