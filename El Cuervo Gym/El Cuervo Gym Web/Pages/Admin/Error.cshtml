@@ -1,0 +1,18 @@
+﻿@page "{accion}/{mensajeError}"
+@model El_Cuervo_Gym_Web.Pages.Admin.ErrorModel
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Error";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4">Se ha producido un error</h2>
+    <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">¡Error!</h4>
+        <p>La acción que se estaba realizando: <strong>@Model.Accion</strong></p>
+        <p>Por favor, espere un minuto y vuelva a intentarlo.</p>
+        <hr>
+        <p class="mb-0"><strong>Error:</strong> @Model.MensajeError</p>
+    </div>
+    <a href="javascript:history.back()" class="btn btn-dark">Volver</a>
+</div>

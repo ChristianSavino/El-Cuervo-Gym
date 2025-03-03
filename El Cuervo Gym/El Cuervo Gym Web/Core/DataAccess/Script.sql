@@ -395,3 +395,94 @@ BEGIN
     RETURN v_id;
 END;
 $$ LANGUAGE plpgsql;
+
+-- Error Logging
+
+CREATE TABLE IF NOT EXISTS adm.Errores (
+    Id SERIAL PRIMARY KEY,
+    Contexto VARCHAR(255) NOT NULL,
+    TipoError VARCHAR(255) NOT NULL,
+    MensajeException TEXT NOT NULL,
+    StackTrace TEXT NOT NULL,
+    InfoExtra TEXT,
+    FechaHora TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+DROP FUNCTION IF EXISTS adm.InsertarError;
+CREATE OR REPLACE FUNCTION adm.InsertarError(
+    p_contexto VARCHAR,
+    p_tipo_error VARCHAR,
+    p_mensaje_exception TEXT,
+    p_stack_trace TEXT,
+    p_info_extra TEXT
+)
+RETURNS VOID AS $$
+BEGIN
+    INSERT INTO adm.Errores (
+        Contexto,
+        TipoError,
+        MensajeException,
+        StackTrace,
+        InfoExtra,
+        FechaHora
+    ) VALUES (
+        p_contexto,
+        p_tipo_error,
+        p_mensaje_exception,
+        p_stack_trace,
+        p_info_extra,
+        CURRENT_TIMESTAMP
+    );
+END;
+$$ LANGUAGE plpgsql;
+
+-- PARAMETROS
+
+-- Crear tabla de parámetros en el esquema adm con FechaModificacion por defecto como CURRENT_TIMESTAMP
+CREATE TABLE IF NOT EXISTS adm.Parametros (
+    Id SERIAL PRIMARY KEY,
+    Clave VARCHAR(100) NOT NULL,
+    Valor VARCHAR(255) NOT NULL,
+    Descripcion TEXT,
+    FechaModificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Crear índice para búsqueda rápida por clave
+CREATE INDEX IF NOT EXISTS idx_parametros_clave
+ON adm.Parametros (Clave);
+
+-- Función para insertar un parámetro solo si no existen datos en la tabla
+CREATE OR REPLACE FUNCTION adm.InsertarParametroSiNoExiste(
+    p_clave VARCHAR,
+    p_valor VARCHAR,
+    p_descripcion TEXT
+)
+RETURNS VOID AS $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM adm.Parametros WHERE clave = p_clave) THEN
+        INSERT INTO adm.Parametros (Clave, Valor, Descripcion)
+        VALUES (p_clave, p_valor, p_descripcion);
+    END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Llamar a la función para insertar el parámetro
+SELECT adm.InsertarParametroSiNoExiste('DiasMaxPermitidos', '2', 'Dias máximos permitidos antes de que venza la cuota');
+SELECT adm.InsertarParametroSiNoExiste('ValorCuota', '24000', 'Valor por default de la cuota');
+
+
+-- Función para actualizar un parámetro y la fecha de modificación
+CREATE OR REPLACE FUNCTION adm.ActualizarParametro(
+    p_clave VARCHAR,
+    p_valor VARCHAR,
+    p_descripcion TEXT
+)
+RETURNS VOID AS $$
+BEGIN
+    UPDATE adm.Parametros
+    SET Valor = p_valor,
+        Descripcion = p_descripcion,
+        FechaModificacion = CURRENT_TIMESTAMP
+    WHERE Clave = p_clave;
+END;
+$$ LANGUAGE plpgsql;

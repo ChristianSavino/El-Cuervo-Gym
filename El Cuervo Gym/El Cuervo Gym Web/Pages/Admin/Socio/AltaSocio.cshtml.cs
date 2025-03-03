@@ -2,6 +2,7 @@ using El_Cuervo_Gym_Web.Core.Admin.Domain;
 using El_Cuervo_Gym_Web.Core.Admin.Logic;
 using El_Cuervo_Gym_Web.Core.Socio.Domain;
 using El_Cuervo_Gym_Web.Core.Utils;
+using El_Cuervo_Gym_Web.Core.Utils.Logging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
@@ -12,10 +13,12 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
     public class AltaSocioModel : PageModel
     {
         private readonly IAdminService _adminService;
+        private readonly ICLogger _logger;
 
-        public AltaSocioModel(IAdminService adminService)
+        public AltaSocioModel(IAdminService adminService, ICLogger logger)
         {
             _adminService = adminService;
+            _logger = logger;
         }
 
         public class AltaSocio
@@ -62,6 +65,7 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
 
         public async Task<IActionResult> OnPost()
         {
+            
             if (!ModelState.IsValid)
             {
                 return Page();
@@ -90,9 +94,10 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
 
                 return RedirectToPage("/Admin/Socio/Responses/AltaCorrecta", new { nombreCompleto = $"{socio.Nombre} {socio.Apellido}", documento = socio.Documento, numeroSocio = socio.Id });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                var contexto = "Alta de Socio";
+                return RedirectToPage(await _logger.LogError(ex, contexto, string.Empty) , new { accion = contexto, mensajeError = ex.Message });
             }
         }
     }

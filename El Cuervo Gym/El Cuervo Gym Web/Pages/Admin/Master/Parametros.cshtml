@@ -2,4 +2,40 @@
 @model El_Cuervo_Gym_Web.Pages.Admin.Master.ParametrosModel
 @{
     Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Parámetros";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4">Cambiar Parámetros</h2>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="post">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="DiasMaximosAtraso">Días máximos de atraso permitido</label>
+                        <input asp-for="DiasMaximosAtraso" class="form-control" type="number" />
+                        <span asp-validation-for="DiasMaximosAtraso" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="ValorCuotaGeneral">Valor de cuota general</label>
+                        <input asp-for="ValorCuotaGeneral" class="form-control" type="number" step="0.01" />
+                        <span asp-validation-for="ValorCuotaGeneral" class="text-danger"></span>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-dark">Guardar</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 }

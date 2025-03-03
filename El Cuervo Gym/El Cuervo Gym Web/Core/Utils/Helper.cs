@@ -2,6 +2,9 @@
 {
     public static class Helper
     {
+        public static string ValorCuotaParamName = "ValorCuota";
+        public static string DiasMaxPermitidoParamName = "DiasMaxPermitidos";
+        
         public static DateTime ObtenerProximoVencimientoDeCuota(DateTime fechaSubscripcion)
         {
             var proximaCuotaPago = fechaSubscripcion.AddMonths(1);

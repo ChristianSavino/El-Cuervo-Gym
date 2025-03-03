@@ -1,9 +1,6 @@
 ﻿using Dapper;
 using Npgsql;
-using System.Collections.Generic;
 using System.Data;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 
 namespace El_Cuervo_Gym_Web.Core.DataAccess
 {
@@ -42,6 +39,14 @@ namespace El_Cuervo_Gym_Web.Core.DataAccess
             }
         }
 
+        public async Task<T> QuerySingleAsync<T>(string query, object parameters = null)
+        {
+            using (var dbConnection = DbConnection)
+            {
+                return await dbConnection.QuerySingleAsync<T>(query, parameters);
+            }
+        }
+
         public async Task ExecuteSqlScriptAsync(string scriptPath)
         {
             var script = await File.ReadAllTextAsync(scriptPath);
@@ -51,12 +56,30 @@ namespace El_Cuervo_Gym_Web.Core.DataAccess
             }
         }
 
-        public async Task<T> QuerySingleAsync<T>(string query, object parameters = null)
+        public async Task LogError(Exception ex, string contexto, string extraInfo = "")
         {
+            var query = @"
+                SELECT adm.InsertarError(
+                    @Contexto,
+                    @TipoError,
+                    @MensajeException,
+                    @StackTrace,
+                    @InfoExtra
+                )";
+
+            var parameters = new
+            {
+                Contexto = contexto,
+                TipoError = ex.GetType().Name,
+                MensajeException = ex.Message,
+                StackTrace = ex.StackTrace,
+                InfoExtra = extraInfo
+            };
+
             using (var dbConnection = DbConnection)
             {
-                return await dbConnection.QuerySingleAsync<T>(query, parameters);
-            }               
+                await dbConnection.ExecuteAsync(query, parameters);
+            }
         }
     }
 }

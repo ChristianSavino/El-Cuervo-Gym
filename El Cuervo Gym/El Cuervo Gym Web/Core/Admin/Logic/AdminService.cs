@@ -22,46 +22,30 @@ namespace El_Cuervo_Gym_Web.Core.Admin.Logic
 
         public async Task<DatosAdminLogin> ObtenerAdmin(string usuario, string password)
         {
-            try
+            var result = await _dataAccess.ObtenerAdmin(usuario, password);
+            var admin = result.FirstOrDefault();
+            if (admin == null)
             {
-                var result = await _dataAccess.ObtenerAdmin(usuario, password);
-                var admin = result.FirstOrDefault();
-                if (admin == null)
-                {
-                    throw new Exception("Usuario o contraseña incorrectos");
-                }
-
-                return admin;
+                throw new Exception("Usuario o contraseña incorrectos");
             }
-            catch (Exception)
-            {
 
-                throw;
-            }
+            return admin;
         }
 
         public async Task<DatosSocio> InsertarSocio(DatosSocio socio)
         {
-            try
+            var proximaCuotaPago = Helper.ObtenerProximoVencimientoDeCuota(socio.FechaSubscripcion);
+
+            socio.ProximoVencimientoCuota = proximaCuotaPago;
+
+            socio.Id = await _socioService.InsertarSocio(socio);
+
+            if (socio.FechaSubscripcion.ToString("MM/yyyy") == DateTime.Now.ToString("MM/yyyy"))
             {
-               var proximaCuotaPago = Helper.ObtenerProximoVencimientoDeCuota(socio.FechaSubscripcion);
-
-                socio.ProximoVencimientoCuota = proximaCuotaPago;
-
-                socio.Id = await _socioService.InsertarSocio(socio);
-
-                if (socio.FechaSubscripcion.ToString("MM/yyyy") == DateTime.Now.ToString("MM/yyyy"))
-                {
-                    var pagoId = await _cobranzaService.InsertarCobranzaNuevoSocio(socio);
-                }
-
-                return socio;
+                var pagoId = await _cobranzaService.InsertarCobranzaNuevoSocio(socio);
             }
-            catch (Exception)
-            {
 
-                throw;
-            }
+            return socio;
         }
 
         public async Task<bool> ActualizarSocio(DatosSocio socio)
