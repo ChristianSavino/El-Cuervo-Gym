@@ -10,5 +10,6 @@ namespace El_Cuervo_Gym_Web.Core.Socio.Logic
         Task<DatosSocio> ObtenerSocioPorId(int idSocio);
         Task<DatosSocio> ObtenerSocioConPagosPorId(int idSocio);
         Task<bool> ActualizarSocio(DatosSocio socio);
+        Task<bool> DarDeBajaSocio(int socioId);
     }
 }

@@ -339,6 +339,22 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+CREATE OR REPLACE FUNCTION Soc.DarDeBajaSocio(
+    p_id INT
+)
+RETURNS INT AS $$
+DECLARE
+    v_affected_rows INT;
+BEGIN
+    UPDATE Soc.Socio
+    SET Estado = 2 -- Estado 2 representa "dado de baja"
+    WHERE Id = p_id;
+
+    GET DIAGNOSTICS v_affected_rows = ROW_COUNT;
+    RETURN v_affected_rows;
+END;
+$$ LANGUAGE plpgsql;
+
 -- FUNC PAGO
 
 DROP FUNCTION IF EXISTS Soc.InsertarPago;
