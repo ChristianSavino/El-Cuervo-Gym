@@ -21,6 +21,7 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
             _logger = logger;
         }
 
+        public string ErrorMessage { get; set; }
         public class AltaSocio
         {
             [Required(ErrorMessage = "El campo Nombre es obligatorio.")]
@@ -93,6 +94,11 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
                 var socio = await _adminService.InsertarSocio(datosSocio);
 
                 return RedirectToPage("/Admin/Socio/Responses/AltaCorrecta", new { nombreCompleto = $"{socio.Nombre} {socio.Apellido}", documento = socio.Documento, numeroSocio = socio.Id });
+            }
+            catch (SocioYaExisteException ex)
+            {
+                ErrorMessage = ex.Message;
+                return Page();
             }
             catch (Exception ex)
             {

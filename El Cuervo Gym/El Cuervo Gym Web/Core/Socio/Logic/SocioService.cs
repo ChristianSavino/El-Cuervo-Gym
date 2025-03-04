@@ -56,5 +56,11 @@ namespace El_Cuervo_Gym_Web.Core.Socio.Logic
         {
             return await _socioDataAccess.DarDeBajaSocio(socioId);
         }
+
+        public async Task<bool> ValidarSiSocioExiste(int documento)
+        {
+            var socios = await _socioDataAccess.ObtenerSocios(new FiltroModel() { Documento = documento.ToString()});
+            return socios.Any();
+        }
     }
 }

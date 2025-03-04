@@ -34,6 +34,12 @@ namespace El_Cuervo_Gym_Web.Core.Admin.Logic
 
         public async Task<DatosSocio> InsertarSocio(DatosSocio socio)
         {
+            var socioExistente = await _socioService.ValidarSiSocioExiste(socio.Documento);
+            if(socioExistente)
+            {
+                throw new SocioYaExisteException("Ya existe un socio con el documento ingresado");
+            }
+
             var proximaCuotaPago = Helper.ObtenerProximoVencimientoDeCuota(socio.FechaSubscripcion);
 
             socio.ProximoVencimientoCuota = proximaCuotaPago;
