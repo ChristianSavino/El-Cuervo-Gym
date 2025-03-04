@@ -1,6 +1,8 @@
 ﻿using El_Cuervo_Gym_Web.Core.Cobranza.Domain;
+using El_Cuervo_Gym_Web.Core.Cobranza.Logic;
 using El_Cuervo_Gym_Web.Core.Socio.DataAccess;
 using El_Cuervo_Gym_Web.Core.Socio.Domain;
+using El_Cuervo_Gym_Web.Core.Utils;
 using Newtonsoft.Json;
 using static El_Cuervo_Gym_Web.Pages.Admin.Socio.ListarSocioModel;
 
@@ -9,10 +11,12 @@ namespace El_Cuervo_Gym_Web.Core.Socio.Logic
     public class SocioService : ISocioService
     {
         private readonly ISocioDataAccess _socioDataAccess;
+        private readonly ICobranzaService _cobranzaService;
 
-        public SocioService(ISocioDataAccess socioDataAccess)
+        public SocioService(ISocioDataAccess socioDataAccess, ICobranzaService cobranzaService)
         {
             _socioDataAccess = socioDataAccess;
+            _cobranzaService = cobranzaService;
         }
 
         public async Task<int> InsertarSocio(DatosSocio socio)
@@ -61,6 +65,16 @@ namespace El_Cuervo_Gym_Web.Core.Socio.Logic
         {
             var socios = await _socioDataAccess.ObtenerSocios(new FiltroModel() { Documento = documento.ToString()});
             return socios.Any();
+        }
+
+        public async Task<DateTime> CobrarSocio(int socioId, DateTime fechaCuota, Pago pago)
+        {
+            var fechaProxima = Helper.ObtenerProximoVencimientoDeCuota(fechaCuota);
+            var result = await _cobranzaService.InsertarCobranza(pago);
+
+            await _socioDataAccess.ActualizarProximaFechaVencimiento(socioId, fechaProxima);
+
+            return fechaProxima;
         }
     }
 }

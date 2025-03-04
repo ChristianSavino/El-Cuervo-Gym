@@ -147,6 +147,8 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+--
+
 DROP FUNCTION IF EXISTS Soc.FiltrarSocios;
 CREATE OR REPLACE FUNCTION Soc.FiltrarSocios(
     p_nombre VARCHAR,
@@ -200,6 +202,8 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+--
+
 DROP FUNCTION IF EXISTS Soc.ObtenerSocioPorId;
 CREATE OR REPLACE FUNCTION Soc.ObtenerSocioPorId(
     p_id INT
@@ -239,6 +243,8 @@ BEGIN
     WHERE s.Id = p_id;
 END;
 $$ LANGUAGE plpgsql;
+
+--
 
 DROP FUNCTION IF EXISTS Soc.ObtenerSocioConPagosPorId;
 CREATE OR REPLACE FUNCTION Soc.ObtenerSocioConPagosPorId(
@@ -298,6 +304,8 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+--
+
 DROP FUNCTION IF EXISTS Soc.ActualizarSocio;
 CREATE OR REPLACE FUNCTION Soc.ActualizarSocio(
     p_id INT,
@@ -339,6 +347,9 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+--
+
+DROP FUNCTION IF EXISTS Soc.DarDeBajaSocio;
 CREATE OR REPLACE FUNCTION Soc.DarDeBajaSocio(
     p_id INT
 )
@@ -348,6 +359,26 @@ DECLARE
 BEGIN
     UPDATE Soc.Socio
     SET Estado = 2 -- Estado 2 representa "dado de baja"
+    WHERE Id = p_id;
+
+    GET DIAGNOSTICS v_affected_rows = ROW_COUNT;
+    RETURN v_affected_rows;
+END;
+$$ LANGUAGE plpgsql;
+
+--
+
+DROP FUNCTION IF EXISTS Soc.ActualizarProximaFechaVencimiento;
+CREATE OR REPLACE FUNCTION Soc.ActualizarProximaFechaVencimiento(
+    p_id INT,
+    p_nueva_fecha TIMESTAMP
+)
+RETURNS INT AS $$
+DECLARE
+    v_affected_rows INT;
+BEGIN
+    UPDATE Soc.Socio
+    SET ProximoVencimientoCuota = p_nueva_fecha
     WHERE Id = p_id;
 
     GET DIAGNOSTICS v_affected_rows = ROW_COUNT;

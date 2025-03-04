@@ -1,5 +1,6 @@
 using El_Cuervo_Gym_Web.Core.Socio.Domain;
 using El_Cuervo_Gym_Web.Core.Socio.Logic;
+using El_Cuervo_Gym_Web.Core.Utils.Logging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -8,10 +9,12 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
     public class ListarSocioModel : PageModel
     {
         private readonly ISocioService _socioService;
+        private readonly ICLogger _logger;
 
-        public ListarSocioModel(ISocioService socioService)
+        public ListarSocioModel(ISocioService socioService, ICLogger logger)
         {
             _socioService = socioService;
+            _logger = logger;
         }
 
         public class FiltroModel
@@ -53,10 +56,10 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
 
                 Filtro.FechaFin = Filtro.FechaFin?.AddDays(-1);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                var contexto = "Listado Socios";
+                RedirectToPage(await _logger.LogError(ex, contexto, string.Empty), new { accion = contexto, mensajeError = ex.Message });
             }
         }
 

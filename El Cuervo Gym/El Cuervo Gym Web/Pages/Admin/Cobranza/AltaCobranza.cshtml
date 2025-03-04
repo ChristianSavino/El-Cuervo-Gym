@@ -1,5 +1,6 @@
 ﻿@page "{socioId:int}"
 @model El_Cuervo_Gym_Web.Pages.Admin.Cobranza.AltaCobranzaModel
+@using El_Cuervo_Gym_Web.Core.Utils
 @{
     Layout = "_LayoutAdmin";
     ViewData["Title"] = "Alta de Cobranza";
@@ -27,15 +28,26 @@
                     </div>
                     <div class="form-group col-md-6">
                         <label asp-for="Cobranza.FechaPago">Fecha de Pago</label>
-                        <input asp-for="Cobranza.FechaPago" class="form-control" type="date" readonly />
+                        <input asp-for="Cobranza.FechaPago" class="form-control" type="date" />
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label asp-for="Cobranza.Monto">Monto</label>
-                        <input asp-for="Cobranza.Monto" class="form-control" readonly />
+                        <input asp-for="Cobranza.Monto" class="form-control" type="number" />
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="Cobranza.Comprobante">Comprobante</label>
+                        <input asp-for="Cobranza.Comprobante" class="form-control" />
                     </div>
                 </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="Cobranza.TipoPago">Tipo de Pago</label>
+                        <select asp-for="Cobranza.TipoPago" class="form-control" asp-items="Html.GetEnumSelectList<TipoPago>()"></select>
+                    </div>
+                </div>
+                <input asp-for="Cobranza.FechaCuota" type="hidden" />
                 <button type="submit" class="btn btn-dark">Registrar Cobranza</button>
             </form>
         </div>

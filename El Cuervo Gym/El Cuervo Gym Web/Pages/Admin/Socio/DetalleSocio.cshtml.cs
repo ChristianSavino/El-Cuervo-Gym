@@ -1,4 +1,5 @@
 using El_Cuervo_Gym_Web.Core.Socio.Logic;
+using El_Cuervo_Gym_Web.Core.Utils.Logging;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
@@ -6,10 +7,12 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
     public class DetalleSocioModel : PageModel
     {
         private readonly ISocioService _socioService;
+        private readonly ICLogger _logger;
 
-        public DetalleSocioModel(ISocioService socioService)
+        public DetalleSocioModel(ISocioService socioService, ICLogger logger)
         {
             _socioService = socioService;
+            _logger = logger;
         }
 
         public class Pago
@@ -39,29 +42,36 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
 
         public async Task OnGet(int socioId)
         {
-            // Aquí puedes obtener los datos del socio desde una base de datos o cualquier otra fuente de datos
-            var socio = await _socioService.ObtenerSocioConPagosPorId(socioId);
-
-            Socio = new SocioModel
+            try
             {
-                Id = socio.Id,
-                Nombre = socio.Nombre,
-                Apellido = socio.Apellido,
-                Documento = socio.Documento.ToString(),
-                Telefono = socio.Telefono.ToString(),
-                ObraSocial = socio.ObraSocial,
-                NumeroObraSocial = socio.NumeroObraSocial,
-                NumeroEmergencia = socio.NumeroEmergencia.ToString(),
-                ContactoEmergencia = socio.ContactoEmergencia,
-                FechaSubscripcion = socio.FechaSubscripcion,
-                ProximoVencimientoCuota = socio.ProximoVencimientoCuota,
-                Estado = socio.Estado.ToString(),
-                UltimosPagos = socio.UltimosPagos.Select(p => new Pago
+                var socio = await _socioService.ObtenerSocioConPagosPorId(socioId);
+
+                Socio = new SocioModel
                 {
-                    FechaPago = p.FechaPago,
-                    Monto = p.Monto
-                }).ToList()
-            };
+                    Id = socio.Id,
+                    Nombre = socio.Nombre,
+                    Apellido = socio.Apellido,
+                    Documento = socio.Documento.ToString(),
+                    Telefono = socio.Telefono.ToString(),
+                    ObraSocial = socio.ObraSocial,
+                    NumeroObraSocial = socio.NumeroObraSocial,
+                    NumeroEmergencia = socio.NumeroEmergencia.ToString(),
+                    ContactoEmergencia = socio.ContactoEmergencia,
+                    FechaSubscripcion = socio.FechaSubscripcion,
+                    ProximoVencimientoCuota = socio.ProximoVencimientoCuota,
+                    Estado = socio.Estado.ToString(),
+                    UltimosPagos = socio.UltimosPagos.Select(p => new Pago
+                    {
+                        FechaPago = p.FechaPago,
+                        Monto = p.Monto
+                    }).ToList()
+                };
+            }
+            catch (Exception ex)
+            {
+                var contexto = "Detalle Socio";
+                RedirectToPage(await _logger.LogError(ex, contexto, string.Empty), new { accion = contexto, mensajeError = ex.Message });
+            }
         }
     }
 }

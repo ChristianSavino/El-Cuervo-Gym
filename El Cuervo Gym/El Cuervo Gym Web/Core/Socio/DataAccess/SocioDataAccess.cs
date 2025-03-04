@@ -154,5 +154,14 @@ namespace El_Cuervo_Gym_Web.Core.Socio.DataAccess
             var affectedRows = await _connection.ExecuteScalarAsync<int>(query, parameters);
             return affectedRows > 0;
         }
+
+        public async Task<bool> ActualizarProximaFechaVencimiento(int socioId, DateTime fechaProxima)
+        {
+            var query = "SELECT Soc.ActualizarProximaFechaVencimiento(@Id, @FechaProxima)";
+            var parameters = new { Id = socioId, FechaProxima = fechaProxima };
+
+            var affectedRows = await _connection.ExecuteScalarAsync<int>(query, parameters);
+            return affectedRows > 0;
+        }
     }
 }

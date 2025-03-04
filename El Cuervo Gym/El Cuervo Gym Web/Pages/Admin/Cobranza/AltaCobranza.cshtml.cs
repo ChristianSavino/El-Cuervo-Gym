@@ -1,11 +1,29 @@
+using El_Cuervo_Gym_Web.Core.Admin.Domain;
+using El_Cuervo_Gym_Web.Core.Cobranza.Domain;
+using El_Cuervo_Gym_Web.Core.Parametros.Logic;
+using El_Cuervo_Gym_Web.Core.Socio.Logic;
+using El_Cuervo_Gym_Web.Core.Utils;
+using El_Cuervo_Gym_Web.Core.Utils.Logging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 
 namespace El_Cuervo_Gym_Web.Pages.Admin.Cobranza
 {
     public class AltaCobranzaModel : PageModel
     {
+        private readonly ISocioService _socioService;
+        private readonly IParametros _parametros;
+        private readonly ICLogger _logger;
+
+        public AltaCobranzaModel(ISocioService socioService, IParametros parametros, ICLogger logger)
+        {
+            _socioService = socioService;
+            _parametros = parametros;
+            _logger = logger;
+        }
+
         public class CobranzaModel
         {
             public string Nombre { get; set; }
@@ -13,39 +31,73 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Cobranza
             public string NumeroSocio { get; set; }
             [DataType(DataType.Date)]
             public DateTime FechaPago { get; set; }
-            public decimal Monto { get; set; }
+            public DateTime FechaCuota { get; set; }
+            public int Monto { get; set; }
+            public string Comprobante { get; set; }
+            public TipoPago TipoPago { get; set; }
         }
 
         [BindProperty]
         public CobranzaModel Cobranza { get; set; }
 
-        public void OnGet(int socioId)
+        public async Task OnGet(int socioId)
         {
-            // Aquí puedes obtener los datos del socio y el valor de la cuota desde una base de datos o cualquier otra fuente de datos
-            Cobranza = new CobranzaModel
+            try
             {
-                Nombre = "Juan Pérez",
-                Documento = "12345678",
-                NumeroSocio = "12345",
-                FechaPago = DateTime.Now,
-                Monto = 1000 // Valor de la cuota
-            };
+                var socio = await _socioService.ObtenerSocioPorId(socioId);
+                var valorCuota = _parametros.ObtenerTodosLosParametros().FirstOrDefault(x => x.Clave == Helper.ValorCuotaParamName);
+
+                Cobranza = new CobranzaModel()
+                {
+                    Nombre = $"{socio.Nombre} {socio.Apellido}",
+                    Documento = socio.Documento.ToString(),
+                    NumeroSocio = socio.Id.ToString(),
+                    FechaPago = DateTime.Now,
+                    FechaCuota = socio.ProximoVencimientoCuota,
+                    Monto = valorCuota != null ? int.Parse(valorCuota.Valor) : 0
+                };
+
+            }
+            catch (Exception ex)
+            {
+                var contexto = "Alta Cobranza";
+                RedirectToPage(await _logger.LogError(ex, contexto, string.Empty), new { accion = contexto, mensajeError = ex.Message });
+            }
         }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPost()
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            // Aquí puedes agregar la lógica para registrar la nueva cobranza en la base de datos
+            var proximaCuota = DateTime.Now;
 
-            // Calcular la fecha de la siguiente cuota (por ejemplo, un mes después de la fecha de pago actual)
-            var siguienteCuota = Cobranza.FechaPago.AddMonths(1);
+            try
+            {
+                var admin = JsonConvert.DeserializeObject<DatosAdminLogin>(HttpContext.Session.GetString("Admin"));
 
-            // Redirigir a la página de confirmación de cobranza
-            return RedirectToPage("/Admin/Cobranza/Responses/CobranzaCorrecta", new { siguienteCuota = siguienteCuota.ToString("yyyy-MM-dd") });
+                var socioId = int.Parse(Cobranza.NumeroSocio);
+                proximaCuota = await _socioService.CobrarSocio(socioId, Cobranza.FechaCuota, new Pago()
+                {
+                    FechaPago = Cobranza.FechaPago,
+                    Monto = Cobranza.Monto,
+                    FechaCuota = Cobranza.FechaCuota,
+                    Comprobante = Cobranza.Comprobante,
+                    Estado = Estado.Activo,
+                    IdAdmin = admin.Id,
+                    IdSocio = socioId,
+                    MetodoPago = Cobranza.TipoPago
+                });
+            }
+            catch (Exception ex)
+            {
+                var contexto = "Alta Cobranza";
+                return RedirectToPage(await _logger.LogError(ex, contexto, string.Empty), new { accion = contexto, mensajeError = ex.Message });
+            }
+
+            return RedirectToPage("/Admin/Cobranza/Responses/CobranzaCorrecta", new { siguienteCuota = proximaCuota.ToString("yyyy-MM-dd") });
         }
     }
 }
