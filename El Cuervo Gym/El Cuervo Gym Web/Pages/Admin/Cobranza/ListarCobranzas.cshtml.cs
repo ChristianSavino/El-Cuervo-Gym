@@ -62,9 +62,6 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Cobranza
 
                 var cobranzas = await _cobranzaService.ObtenerCobranzasFiltro(filtroCobranzas);
                 Cobranzas = cobranzas.ToList();
-
-                Filtro.FechaFin = Filtro.FechaFin?.AddDays(-1);
-                Filtro.MetodoPago = Filtro.MetodoPago;
             }
             catch (Exception ex)
             {

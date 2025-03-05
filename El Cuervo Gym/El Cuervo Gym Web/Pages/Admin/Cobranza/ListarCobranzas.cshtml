@@ -6,6 +6,12 @@
     ViewData["Title"] = "Listar Cobranzas";
 }
 
+<style>
+    .baja {
+        color: red;
+    }
+</style>
+
 <div class="container mt-5">
     <h2 class="mb-4">Listar Cobranzas</h2>
     <div class="card mb-4">
@@ -71,7 +77,7 @@
             @foreach (var cobranza in Model.Cobranzas)
             {
                 <tr>
-                    <td>@cobranza.Nombre</td>
+                    <td>@cobranza.Nombre @(cobranza.Estado == Estado.Baja ? "(Baja)" : "")</td>
                     <td>@cobranza.Documento</td>
                     <td>@cobranza.IdSocio</td>
                     <td>@cobranza.FechaPago.ToString("dd/MM/yyyy")</td>

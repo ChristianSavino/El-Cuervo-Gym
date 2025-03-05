@@ -54,6 +54,7 @@ namespace El_Cuervo_Gym_Web.Core.Cobranza.Logic
             var filtroCobranza = new FiltroCobranza
             {
                 FechaCuota = cobranza.FechaCuota,
+                NumeroSocio = cobranza.IdSocio,
                 Id = cobranza.Id
             };
 

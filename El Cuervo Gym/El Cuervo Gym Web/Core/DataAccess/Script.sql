@@ -522,6 +522,7 @@ $$ LANGUAGE plpgsql;
 DROP FUNCTION IF EXISTS Soc.ExistePagosPosteriores;
 CREATE OR REPLACE FUNCTION Soc.ExistePagosPosteriores(
     p_id INT,
+    p_id_socio INT,
     p_fecha_cuota TIMESTAMP
 )
 RETURNS BOOLEAN AS $$
@@ -531,6 +532,7 @@ BEGIN
         FROM Soc.Pago p
         WHERE 
             p.Id <> p_id
+            AND p.IdSocio = p_id_socio
             AND p.FechaCuota >= p_fecha_cuota
     );
 END;

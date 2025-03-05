@@ -84,12 +84,14 @@ namespace El_Cuervo_Gym_Web.Core.Cobranza.DataAccess
             var query = @"
         SELECT Soc.ExistePagosPosteriores(
             @Id,
+            @IdSocio,
             @FechaCuota
         )";
 
             var parameters = new
             {
                 filtro.Id,
+                IdSocio = filtro.NumeroSocio,
                 filtro.FechaCuota
             };
 

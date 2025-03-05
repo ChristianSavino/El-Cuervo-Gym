@@ -1,9 +1,16 @@
 ﻿@page
 @model El_Cuervo_Gym_Web.Pages.Admin.Socio.ListarSocioModel
+@using El_Cuervo_Gym_Web.Core.Utils
 @{
     Layout = "_LayoutAdmin";
     ViewData["Title"] = "Listar Socios";
 }
+
+<style>
+    .baja {
+        color: red;
+    }
+</style>
 
 <div class="container mt-5">
     <h2 class="mb-4">Listar Socios</h2>
@@ -66,7 +73,7 @@
                 @foreach (var socio in Model.Socios)
                 {
                     <tr>
-                        <td>@socio.Nombre</td>
+                        <td>@socio.Nombre @(socio.Estado == Estado.Baja ? "(Baja)" : "")</td>
                         <td>@socio.Documento</td>
                         <td>@socio.Id</td>
                         <td>@socio.FechaSubscripcion.ToString("dd/MM/yyyy")</td>
