@@ -3,9 +3,7 @@ using El_Cuervo_Gym_Web.Core.Cobranza.Logic;
 using El_Cuervo_Gym_Web.Core.Socio.DataAccess;
 using El_Cuervo_Gym_Web.Core.Socio.Domain;
 using El_Cuervo_Gym_Web.Core.Socio.Domain.Request;
-using El_Cuervo_Gym_Web.Core.Utils;
 using Newtonsoft.Json;
-using static El_Cuervo_Gym_Web.Pages.Admin.Socio.ListarSocioModel;
 
 namespace El_Cuervo_Gym_Web.Core.Socio.Logic
 {
@@ -70,14 +68,9 @@ namespace El_Cuervo_Gym_Web.Core.Socio.Logic
             return socios.Any();
         }
 
-        public async Task<DateTime> CobrarSocio(int socioId, DateTime fechaCuota, Pago pago)
+        public async Task<bool> ActualizarProximaFechaVencimiento(int socioId, DateTime fechaProxima)
         {
-            var fechaProxima = Helper.ObtenerProximoVencimientoDeCuota(fechaCuota);
-            var result = await _cobranzaService.InsertarCobranza(pago);
-
-            await _socioDataAccess.ActualizarProximaFechaVencimiento(socioId, fechaProxima);
-
-            return fechaProxima;
+            return await _socioDataAccess.ActualizarProximaFechaVencimiento(socioId, fechaProxima);
         }
     }
 }

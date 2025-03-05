@@ -13,6 +13,6 @@ namespace El_Cuervo_Gym_Web.Core.Socio.Logic
         Task<bool> ActualizarSocio(DatosSocio socio);
         Task<bool> DarDeBajaSocio(int socioId);
         Task<bool> ValidarSiSocioExiste(int documento);
-        Task<DateTime> CobrarSocio(int socioId, DateTime fechaCuota, Pago pago);
+        Task<bool> ActualizarProximaFechaVencimiento(int socioId, DateTime fechaProxima);
     }
 }

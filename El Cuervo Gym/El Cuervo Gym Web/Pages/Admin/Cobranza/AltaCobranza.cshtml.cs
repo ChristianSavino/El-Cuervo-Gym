@@ -1,4 +1,5 @@
 using El_Cuervo_Gym_Web.Core.Admin.Domain;
+using El_Cuervo_Gym_Web.Core.Admin.Logic;
 using El_Cuervo_Gym_Web.Core.Cobranza.Domain;
 using El_Cuervo_Gym_Web.Core.Parametros.Logic;
 using El_Cuervo_Gym_Web.Core.Socio.Logic;
@@ -13,12 +14,14 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Cobranza
 {
     public class AltaCobranzaModel : PageModel
     {
+        private readonly IAdminService _adminService;
         private readonly ISocioService _socioService;
         private readonly IParametros _parametros;
         private readonly ICLogger _logger;
 
-        public AltaCobranzaModel(ISocioService socioService, IParametros parametros, ICLogger logger)
+        public AltaCobranzaModel(IAdminService adminService, IParametros parametros, ICLogger logger, ISocioService socioService)
         {
+            _adminService = adminService;
             _socioService = socioService;
             _parametros = parametros;
             _logger = logger;
@@ -82,7 +85,7 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Cobranza
                 var admin = JsonConvert.DeserializeObject<DatosAdminLogin>(HttpContext.Session.GetString("Admin"));
 
                 var socioId = int.Parse(Cobranza.NumeroSocio);
-                proximaCuota = await _socioService.CobrarSocio(socioId, Cobranza.FechaCuota, new Pago()
+                proximaCuota = await _adminService.CobrarSocio(socioId, Cobranza.FechaCuota, new Pago()
                 {
                     FechaPago = Cobranza.FechaPago,
                     Monto = Cobranza.Monto,

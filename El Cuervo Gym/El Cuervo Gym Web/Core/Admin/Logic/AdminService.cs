@@ -1,5 +1,6 @@
 ﻿using El_Cuervo_Gym_Web.Core.Admin.DataAccess;
 using El_Cuervo_Gym_Web.Core.Admin.Domain;
+using El_Cuervo_Gym_Web.Core.Cobranza.Domain;
 using El_Cuervo_Gym_Web.Core.Cobranza.Logic;
 using El_Cuervo_Gym_Web.Core.Socio.Domain;
 using El_Cuervo_Gym_Web.Core.Socio.Logic;
@@ -60,6 +61,23 @@ namespace El_Cuervo_Gym_Web.Core.Admin.Logic
             socio.ProximoVencimientoCuota = proximaCuotaPago;
 
             return await _socioService.ActualizarSocio(socio);
+        }
+
+        public async Task<DateTime> CobrarSocio(int socioId, DateTime fechaCuota, Pago pago)
+        {
+            var fechaProxima = Helper.ObtenerProximoVencimientoDeCuota(fechaCuota);
+            var result = await _cobranzaService.InsertarCobranza(pago);
+
+            await _socioService.ActualizarProximaFechaVencimiento(socioId, fechaProxima);
+
+            return fechaProxima;
+        }
+
+        public async Task DarDeBajaComprobante(int idComprobante)
+        {
+            var comprobante = await _cobranzaService.ObtenerCobranzaPorId(idComprobante);
+            await _cobranzaService.DarDeBajaComprobante(idComprobante);
+            await _socioService.ActualizarProximaFechaVencimiento(comprobante.IdSocio, comprobante.FechaCuota);
         }
     }
 }

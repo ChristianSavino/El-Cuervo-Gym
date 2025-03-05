@@ -97,5 +97,14 @@ namespace El_Cuervo_Gym_Web.Core.Cobranza.DataAccess
 
             return await _connection.QuerySingleAsync<bool>(query, parameters);
         }
+
+        public async Task<bool> DarDeBajaComprobante(int idComprobante)
+        {
+            var query = "SELECT Soc.DarDeBajaPago(@Id)";
+            var parameters = new { Id = idComprobante };
+
+            var affectedRows = await _connection.ExecuteScalarAsync<int>(query, parameters);
+            return affectedRows > 0;
+        }
     }
 }

@@ -534,7 +534,27 @@ BEGIN
             p.Id <> p_id
             AND p.IdSocio = p_id_socio
             AND p.FechaCuota >= p_fecha_cuota
+            AND p.Estado = 1
     );
+END;
+$$ LANGUAGE plpgsql;
+
+--
+
+DROP FUNCTION IF EXISTS Soc.DarDeBajaPago;
+CREATE OR REPLACE FUNCTION Soc.DarDeBajaPago(
+    p_id INT
+)
+RETURNS INT AS $$
+DECLARE
+    v_affected_rows INT;
+BEGIN
+    UPDATE Soc.Pago
+    SET Estado = 2 -- Estado 2 representa "dado de baja"
+    WHERE Id = p_id;
+
+    GET DIAGNOSTICS v_affected_rows = ROW_COUNT;
+    RETURN v_affected_rows;
 END;
 $$ LANGUAGE plpgsql;
 

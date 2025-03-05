@@ -2,7 +2,7 @@
 
 namespace El_Cuervo_Gym_Web.Core.Admin.Domain
 {
-    public class Admin
+    public class DatosAdmin
     {
         public int Id { get; set; }
         public string Usuario { get; set; }

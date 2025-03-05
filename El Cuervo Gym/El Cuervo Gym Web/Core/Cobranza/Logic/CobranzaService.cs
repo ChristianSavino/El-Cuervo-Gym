@@ -18,6 +18,11 @@ namespace El_Cuervo_Gym_Web.Core.Cobranza.Logic
             _parametros = parametros;
         }
 
+        public async Task<bool> DarDeBajaComprobante(int idComprobante)
+        {
+            return await _cobranzaDataAccess.DarDeBajaComprobante(idComprobante);
+        }
+
         public async Task<int> InsertarCobranza(Pago cobranza)
         {
             return await _cobranzaDataAccess.InsertarCobranza(cobranza);

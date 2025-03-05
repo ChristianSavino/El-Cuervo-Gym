@@ -9,5 +9,6 @@ namespace El_Cuervo_Gym_Web.Core.Cobranza.DataAccess
         Task<IEnumerable<PagoListado>> ObtenerCobranzasFiltro(FiltroCobranza filtro);
         Task<PagoListado> ObtenerCobranzaPorId(int id);
         Task<bool> ExistePagosPosteriores(FiltroCobranza filtro);
+        Task<bool> DarDeBajaComprobante(int idComprobante);
     }
 }

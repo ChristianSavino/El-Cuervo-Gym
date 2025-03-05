@@ -2,4 +2,47 @@
 @model El_Cuervo_Gym_Web.Pages.Admin.Master.AltaAdminModel
 @{
     Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Alta de Admin";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4">Alta de Socio</h2>
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="post">
+                @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                {
+                    <div class="alert alert-danger" role="alert">
+                        @Model.ErrorMessage
+                    </div>
+                }
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="NuevoAdmin.Usuario">Usuario</label>
+                        <input asp-for="NuevoAdmin.Usuario" class="form-control" />
+                        <span asp-validation-for="NuevoAdmin.Usuario" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="NuevoAdmin.Password">Contraseña</label>
+                        <input asp-for="NuevoAdmin.Password" class="form-control" />
+                        <span asp-validation-for="NuevoAdmin.Password" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="NuevoAdmin.IsMaster">Documento</label>
+                        <input asp-for="NuevoAdmin.IsMaster" class="form-control" type="checkbox" />
+                        <span asp-validation-for="NuevoAdmin.IsMaster" class="text-danger"></span>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-dark">Dar de Alta</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 }
