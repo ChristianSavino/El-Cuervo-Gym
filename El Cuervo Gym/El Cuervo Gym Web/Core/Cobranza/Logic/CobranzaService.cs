@@ -3,6 +3,7 @@ using El_Cuervo_Gym_Web.Core.Cobranza.Domain;
 using El_Cuervo_Gym_Web.Core.Parametros.Logic;
 using El_Cuervo_Gym_Web.Core.Socio.Domain;
 using El_Cuervo_Gym_Web.Core.Utils;
+using El_Cuervo_Gym_Web.Pages.Admin.Cobranza;
 
 namespace El_Cuervo_Gym_Web.Core.Cobranza.Logic
 {
@@ -39,6 +40,11 @@ namespace El_Cuervo_Gym_Web.Core.Cobranza.Logic
             };
 
             return await InsertarCobranza(pago);
+        }
+
+        public async Task<IEnumerable<PagoListado>> ObtenerCobranzasFiltro(ListarCobranzasModel.FiltroModel filtro)
+        {
+            return await _cobranzaDataAccess.ObtenerCobranzasFiltro(filtro);
         }
     }
 }

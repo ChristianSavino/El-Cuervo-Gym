@@ -192,7 +192,7 @@ BEGIN
         s.IdAdmin
     FROM Soc.Socio s
     WHERE 
-        (p_nombre IS NULL OR s.Nombre ILIKE '%' || p_nombre || '%')
+        (p_nombre IS NULL OR (s.Nombre ILIKE '%' || p_nombre || '%' OR s.apellido ILIKE '%' || p_nombre || '%'))
         AND (p_documento IS NULL OR s.Documento::TEXT ILIKE '%' || p_documento || '%')
         AND (p_numero_socio IS NULL OR s.Id::TEXT ILIKE '%' || p_numero_socio || '%')
         AND (p_fecha_inicio IS NULL OR s.FechaSubscripcion >= p_fecha_inicio)
@@ -424,6 +424,56 @@ BEGIN
     ) RETURNING Id INTO v_id;
 
     RETURN v_id;
+END;
+$$ LANGUAGE plpgsql;
+
+--
+
+DROP FUNCTION IF EXISTS Soc.FiltrarPagos;
+CREATE OR REPLACE FUNCTION Soc.FiltrarPagos(
+    p_nombre VARCHAR,
+    p_documento INT,
+    p_numero_socio INT,
+    p_fecha_inicio TIMESTAMP,
+    p_fecha_fin TIMESTAMP,
+    p_incluir_dados_de_baja BOOLEAN
+)
+RETURNS TABLE (
+    Id INT,
+    IdSocio INT,
+    FechaPago TIMESTAMP,
+    FechaCuota TIMESTAMP,
+    Monto DECIMAL(10, 2),
+    Estado INT,
+    IdAdmin INT,
+    MetodoPago INT,
+    Comprobante VARCHAR,
+    Nombre VARCHAR,
+    Documento INT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        p.Id,
+        p.IdSocio,
+        p.FechaPago,
+        p.FechaCuota,
+        p.Monto,
+        p.Estado,
+        p.IdAdmin,
+        p.MetodoPago,
+        p.Comprobante,
+        s.Nombre,
+        s.Documento
+    FROM Soc.Pago p
+    JOIN Soc.Socio s ON p.IdSocio = s.Id
+    WHERE 
+        (p_nombre IS NULL OR (s.Nombre ILIKE '%' || p_nombre || '%' OR s.apellido ILIKE '%' || p_nombre || '%'))
+        AND (p_documento IS NULL OR s.Documento = p_documento)
+        AND (p_numero_socio IS NULL OR s.Id = p_numero_socio)
+        AND (p_fecha_inicio IS NULL OR p.FechaPago >= p_fecha_inicio)
+        AND (p_fecha_fin IS NULL OR p.FechaPago < p_fecha_fin)
+        AND (p_incluir_dados_de_baja IS TRUE OR p.Estado = 1);
 END;
 $$ LANGUAGE plpgsql;
 

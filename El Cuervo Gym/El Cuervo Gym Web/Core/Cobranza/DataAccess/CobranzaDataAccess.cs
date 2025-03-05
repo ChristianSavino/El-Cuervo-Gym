@@ -1,5 +1,6 @@
 ﻿using El_Cuervo_Gym_Web.Core.Cobranza.Domain;
 using El_Cuervo_Gym_Web.Core.DataAccess;
+using El_Cuervo_Gym_Web.Pages.Admin.Cobranza;
 
 namespace El_Cuervo_Gym_Web.Core.Cobranza.DataAccess
 {
@@ -40,15 +41,30 @@ namespace El_Cuervo_Gym_Web.Core.Cobranza.DataAccess
 
             return await _connection.QuerySingleAsync<int>(query, parameters);
         }
+
+        public async Task<IEnumerable<PagoListado>> ObtenerCobranzasFiltro(ListarCobranzasModel.FiltroModel filtro)
+        {
+            var query = @"
+                SELECT * FROM Soc.FiltrarPagos(
+                    @Nombre,
+                    @Documento,
+                    @NumeroSocio,
+                    @FechaInicio,
+                    @FechaFin,
+                    @IncluirDadosDeBaja
+                )";
+
+            var parameters = new
+            {
+                filtro.Nombre,
+                filtro.Documento,
+                filtro.NumeroSocio,
+                filtro.FechaInicio,
+                filtro.FechaFin,
+                filtro.IncluirDadosDeBaja
+            };
+
+            return await _connection.QueryAsync<PagoListado>(query, parameters);
+        }
     }
 }
-
-
-
-
-
-
-
-
-
-
