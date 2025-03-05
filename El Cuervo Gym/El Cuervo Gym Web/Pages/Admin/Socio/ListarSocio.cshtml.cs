@@ -1,4 +1,5 @@
 using El_Cuervo_Gym_Web.Core.Socio.Domain;
+using El_Cuervo_Gym_Web.Core.Socio.Domain.Request;
 using El_Cuervo_Gym_Web.Core.Socio.Logic;
 using El_Cuervo_Gym_Web.Core.Utils.Logging;
 using Microsoft.AspNetCore.Mvc;
@@ -36,25 +37,22 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
         {
             try
             {
-                if (CheckIfFiltroIsEmpty())
+                if (!CheckIfFiltroIsEmpty())
                 {
-                    Filtro = new FiltroModel()
+                    var filtroSocios = new FiltroSocio()
                     {
-                        CuotasVencidas = false,
-                        IncluirDadosDeBaja = false,
-                        FechaInicio = DateTime.Now.AddDays(-7),
-                        FechaFin = DateTime.Now.AddDays(1)
+                        Nombre = Filtro.Nombre,
+                        Documento = Filtro.Documento,
+                        NumeroSocio = Filtro.NumeroSocio,
+                        FechaInicio = Filtro.FechaInicio,
+                        FechaFin = Filtro.FechaFin?.AddDays(1),
+                        CuotasVencidas = Filtro.CuotasVencidas,
+                        IncluirDadosDeBaja = Filtro.IncluirDadosDeBaja
                     };
+                    
+                    var socios = await _socioService.ObtenerSocios(filtroSocios);
+                    Socios = socios.ToList();
                 }
-                else
-                {
-                    Filtro.FechaFin = Filtro.FechaFin?.AddDays(1);
-                }
-
-                var socios = await _socioService.ObtenerSocios(Filtro);
-                Socios = socios.ToList();
-
-                Filtro.FechaFin = Filtro.FechaFin?.AddDays(-1);
             }
             catch (Exception ex)
             {

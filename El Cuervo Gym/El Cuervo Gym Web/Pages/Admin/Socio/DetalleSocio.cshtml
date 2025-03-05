@@ -27,23 +27,32 @@
         </div>
     </div>
     <h3 class="mb-3">Últimos Pagos</h3>
-    <table class="table table-striped">
-        <thead class="thead-dark">
-            <tr>
-                <th>Fecha de Pago</th>
-                <th>Monto</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var pago in Model.Socio.UltimosPagos)
-            {
+    @if (Model.Socio.UltimosPagos != null && Model.Socio.UltimosPagos.Any())
+    {
+        <table class="table table-striped">
+            <thead class="thead-dark">
                 <tr>
-                    <td>@pago.FechaPago.ToString("dd/MM/yyyy")</td>
-                    <td>@pago.Monto.ToString("C")</td>
+                    <th>Fecha de Pago</th>
+                    <th>Monto</th>
+                    <th>Tipo de Pago</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var pago in Model.Socio.UltimosPagos)
+                {
+                    <tr>
+                        <td>@pago.FechaPago.ToString("dd/MM/yyyy")</td>
+                        <td>@pago.Monto.ToString("C")</td>
+                        <td>@pago.MetodoPago</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No hay pagos registrados para este socio.</p>
+    }
 </div>
 
 @section Scripts {

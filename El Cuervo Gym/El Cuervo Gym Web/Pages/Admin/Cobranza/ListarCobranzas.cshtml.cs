@@ -1,5 +1,7 @@
 using El_Cuervo_Gym_Web.Core.Cobranza.Domain;
+using El_Cuervo_Gym_Web.Core.Cobranza.Domain.Request;
 using El_Cuervo_Gym_Web.Core.Cobranza.Logic;
+using El_Cuervo_Gym_Web.Core.Utils;
 using El_Cuervo_Gym_Web.Core.Utils.Logging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -25,17 +27,7 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Cobranza
             public DateTime? FechaInicio { get; set; }
             public DateTime? FechaFin { get; set; }
             public bool IncluirDadosDeBaja { get; set; }
-        }
-
-        public class CobranzaModel
-        {
-            public int Id { get; set; }
-            public string Nombre { get; set; }
-            public string Documento { get; set; }
-            public string NumeroSocio { get; set; }
-            public DateTime FechaPago { get; set; }
-            public decimal Monto { get; set; }
-            public bool DadoDeBaja { get; set; }
+            public TipoPago? MetodoPago { get; set; }
         }
 
         [BindProperty(SupportsGet = true)]
@@ -52,18 +44,27 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Cobranza
                     {
                         IncluirDadosDeBaja = false,
                         FechaInicio = DateTime.Now.AddDays(-7),
-                        FechaFin = DateTime.Now.AddDays(1)
+                        FechaFin = DateTime.Now,
+                        MetodoPago = null
                     };
                 }
-                else
-                {
-                    Filtro.FechaFin = Filtro.FechaFin?.AddDays(1);
-                }
 
-                var cobranzas = await _cobranzaService.ObtenerCobranzasFiltro(Filtro);
+                var filtroCobranzas = new FiltroCobranza()
+                {
+                    Nombre = Filtro.Nombre,
+                    Documento = Filtro.Documento,
+                    NumeroSocio = Filtro.NumeroSocio,
+                    FechaInicio = Filtro.FechaInicio,
+                    FechaFin = Filtro.FechaFin?.AddDays(1),
+                    IncluirDadosDeBaja = Filtro.IncluirDadosDeBaja,
+                    MetodoPago = Filtro.MetodoPago
+                };
+
+                var cobranzas = await _cobranzaService.ObtenerCobranzasFiltro(filtroCobranzas);
                 Cobranzas = cobranzas.ToList();
 
                 Filtro.FechaFin = Filtro.FechaFin?.AddDays(-1);
+                Filtro.MetodoPago = Filtro.MetodoPago;
             }
             catch (Exception ex)
             {
@@ -74,7 +75,7 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Cobranza
 
         private bool CheckIfFiltroIsEmpty()
         {
-            return Filtro.Nombre == null && Filtro.Documento == null && Filtro.NumeroSocio == null && Filtro.FechaInicio == null && Filtro.FechaFin == null;
+            return Filtro.Nombre == null && Filtro.Documento == null && Filtro.NumeroSocio == null && Filtro.FechaInicio == null && Filtro.FechaFin == null && Filtro.MetodoPago == null;
         }
     }
 }

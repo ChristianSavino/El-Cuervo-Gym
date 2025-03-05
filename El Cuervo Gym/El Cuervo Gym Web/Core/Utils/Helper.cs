@@ -11,7 +11,10 @@
             if (proximaCuotaPago.Date < DateTime.Now.Date)
             {
                 proximaCuotaPago = new DateTime(DateTime.Now.Year, DateTime.Now.Month, fechaSubscripcion.Day);
-                proximaCuotaPago = proximaCuotaPago.AddMonths(1);
+                if (proximaCuotaPago.Date < DateTime.Now.Date)
+                {
+                    proximaCuotaPago = proximaCuotaPago.AddMonths(1);
+                }
             }
 
             return proximaCuotaPago;

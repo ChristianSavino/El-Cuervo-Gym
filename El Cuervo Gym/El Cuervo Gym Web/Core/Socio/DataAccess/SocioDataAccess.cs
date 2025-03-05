@@ -1,6 +1,6 @@
 ﻿using El_Cuervo_Gym_Web.Core.DataAccess;
 using El_Cuervo_Gym_Web.Core.Socio.Domain;
-using El_Cuervo_Gym_Web.Pages.Admin.Socio;
+using El_Cuervo_Gym_Web.Core.Socio.Domain.Request;
 
 namespace El_Cuervo_Gym_Web.Core.Socio.DataAccess
 {
@@ -50,7 +50,7 @@ namespace El_Cuervo_Gym_Web.Core.Socio.DataAccess
             return await _connection.QuerySingleAsync<int>(query, parameters);
         }
 
-        public async Task<IEnumerable<DatosSocio>> ObtenerSocios(ListarSocioModel.FiltroModel filtro)
+        public async Task<IEnumerable<DatosSocio>> ObtenerSocios(FiltroSocio filtro)
         {
             var query = @"
                 SELECT *

@@ -2,6 +2,7 @@
 using El_Cuervo_Gym_Web.Core.Cobranza.Logic;
 using El_Cuervo_Gym_Web.Core.Socio.DataAccess;
 using El_Cuervo_Gym_Web.Core.Socio.Domain;
+using El_Cuervo_Gym_Web.Core.Socio.Domain.Request;
 using El_Cuervo_Gym_Web.Core.Utils;
 using Newtonsoft.Json;
 using static El_Cuervo_Gym_Web.Pages.Admin.Socio.ListarSocioModel;
@@ -24,7 +25,7 @@ namespace El_Cuervo_Gym_Web.Core.Socio.Logic
             return await _socioDataAccess.InsertarSocio(socio);
         }
 
-        public async Task<IEnumerable<DatosSocio>> ObtenerSocios(FiltroModel filtro)
+        public async Task<IEnumerable<DatosSocio>> ObtenerSocios(FiltroSocio filtro)
         {
             try
             {
@@ -34,7 +35,7 @@ namespace El_Cuervo_Gym_Web.Core.Socio.Logic
             {
 
                 throw;
-            }            
+            }
         }
 
         public async Task<DatosSocio> ObtenerSocioPorId(int idSocio)
@@ -45,9 +46,11 @@ namespace El_Cuervo_Gym_Web.Core.Socio.Logic
         public async Task<DatosSocio> ObtenerSocioConPagosPorId(int idSocio)
         {
             var socio = await _socioDataAccess.ObtenerSocioConPagosPorId(idSocio);
-            socio.UltimosPagos = JsonConvert.DeserializeObject<List<Pago>>(socio.PagosJson);
-            socio.UltimosPagos = socio.UltimosPagos.OrderByDescending(p => p.FechaPago).ToList();
-
+            if (!string.IsNullOrEmpty(socio.PagosJson))
+            {
+                socio.UltimosPagos = JsonConvert.DeserializeObject<List<Pago>>(socio.PagosJson);
+                socio.UltimosPagos = socio.UltimosPagos.OrderByDescending(p => p.FechaPago).ToList();
+            }
             return socio;
         }
 
@@ -63,7 +66,7 @@ namespace El_Cuervo_Gym_Web.Core.Socio.Logic
 
         public async Task<bool> ValidarSiSocioExiste(int documento)
         {
-            var socios = await _socioDataAccess.ObtenerSocios(new FiltroModel() { Documento = documento.ToString()});
+            var socios = await _socioDataAccess.ObtenerSocios(new FiltroSocio() { Documento = documento.ToString() });
             return socios.Any();
         }
 

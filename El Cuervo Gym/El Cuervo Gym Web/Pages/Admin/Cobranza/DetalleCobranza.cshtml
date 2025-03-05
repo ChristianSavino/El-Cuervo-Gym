@@ -11,11 +11,19 @@
         <div class="card-body">
             <h5 class="card-title">Cobranza de @Model.Cobranza.Nombre</h5>
             <p class="card-text"><strong>Documento:</strong> @Model.Cobranza.Documento</p>
-            <p class="card-text"><strong>Número de Socio:</strong> @Model.Cobranza.NumeroSocio</p>
-            <p class="card-text"><strong>Fecha de Pago:</strong> @Model.Cobranza.FechaPago.ToString("dd/MM/yyyy")</p>
+            <p class="card-text"><strong>Número de Socio:</strong> @Model.Cobranza.IdSocio</p>
+            <p class="card-text"><strong>Fecha de Pago:</strong> @Model.Cobranza.FechaPago.ToString("dd/MM/yyyy HH:mm")</p>
+            <p class="card-text"><strong>Fecha de Cuota:</strong> @Model.Cobranza.FechaCuota.ToString("dd/MM/yyyy")</p>
             <p class="card-text"><strong>Monto:</strong> @Model.Cobranza.Monto.ToString("C")</p>
+            <p class="card-text"><strong>Estado:</strong> @Model.Cobranza.Estado</p>
+            <p class="card-text"><strong>Método de Pago:</strong> @Model.Cobranza.MetodoPago</p>
+            <p class="card-text"><strong>Comprobante:</strong> @Model.Cobranza.Comprobante</p>
             <div class="mt-4">
-                <button class="btn btn-danger" onclick="confirmarBaja(@Model.Cobranza.Id)">Dar de Baja</button>
+                <button class="btn btn-danger" onclick="confirmarBaja(@Model.Cobranza.Id)" @(Model.ExistenPagosPosteriores ? "disabled" : "")>Dar de Baja</button>
+                @if (Model.ExistenPagosPosteriores)
+                {
+                    <p class="text-danger mt-2">No se puede dar de baja el comprobante porque existen pagos posteriores.</p>
+                }
             </div>
         </div>
     </div>

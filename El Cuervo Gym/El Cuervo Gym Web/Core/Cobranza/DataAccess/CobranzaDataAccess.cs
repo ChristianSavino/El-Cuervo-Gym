@@ -1,6 +1,6 @@
 ﻿using El_Cuervo_Gym_Web.Core.Cobranza.Domain;
+using El_Cuervo_Gym_Web.Core.Cobranza.Domain.Request;
 using El_Cuervo_Gym_Web.Core.DataAccess;
-using El_Cuervo_Gym_Web.Pages.Admin.Cobranza;
 
 namespace El_Cuervo_Gym_Web.Core.Cobranza.DataAccess
 {
@@ -42,7 +42,7 @@ namespace El_Cuervo_Gym_Web.Core.Cobranza.DataAccess
             return await _connection.QuerySingleAsync<int>(query, parameters);
         }
 
-        public async Task<IEnumerable<PagoListado>> ObtenerCobranzasFiltro(ListarCobranzasModel.FiltroModel filtro)
+        public async Task<IEnumerable<PagoListado>> ObtenerCobranzasFiltro(FiltroCobranza filtro)
         {
             var query = @"
                 SELECT * FROM Soc.FiltrarPagos(
@@ -51,7 +51,8 @@ namespace El_Cuervo_Gym_Web.Core.Cobranza.DataAccess
                     @NumeroSocio,
                     @FechaInicio,
                     @FechaFin,
-                    @IncluirDadosDeBaja
+                    @IncluirDadosDeBaja,
+                    @MetodoPago
                 )";
 
             var parameters = new
@@ -61,10 +62,38 @@ namespace El_Cuervo_Gym_Web.Core.Cobranza.DataAccess
                 filtro.NumeroSocio,
                 filtro.FechaInicio,
                 filtro.FechaFin,
-                filtro.IncluirDadosDeBaja
+                filtro.IncluirDadosDeBaja,
+                filtro.MetodoPago
             };
 
             return await _connection.QueryAsync<PagoListado>(query, parameters);
+        }
+
+        public async Task<PagoListado> ObtenerCobranzaPorId(int id)
+        {
+            var query = @"
+                SELECT * FROM Soc.ObtenerPagoPorId(@Id)";
+
+            var parameters = new { Id = id };
+
+            return await _connection.QuerySingleAsync<PagoListado>(query, parameters);
+        }
+
+        public async Task<bool> ExistePagosPosteriores(FiltroCobranza filtro)
+        {
+            var query = @"
+        SELECT Soc.ExistePagosPosteriores(
+            @Id,
+            @FechaCuota
+        )";
+
+            var parameters = new
+            {
+                filtro.Id,
+                filtro.FechaCuota
+            };
+
+            return await _connection.QuerySingleAsync<bool>(query, parameters);
         }
     }
 }

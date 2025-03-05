@@ -1,3 +1,4 @@
+using El_Cuervo_Gym_Web.Core.Cobranza.Domain;
 using El_Cuervo_Gym_Web.Core.Socio.Logic;
 using El_Cuervo_Gym_Web.Core.Utils.Logging;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -13,12 +14,6 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
         {
             _socioService = socioService;
             _logger = logger;
-        }
-
-        public class Pago
-        {
-            public DateTime FechaPago { get; set; }
-            public decimal Monto { get; set; }
         }
 
         public class SocioModel
@@ -60,11 +55,7 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
                     FechaSubscripcion = socio.FechaSubscripcion,
                     ProximoVencimientoCuota = socio.ProximoVencimientoCuota,
                     Estado = socio.Estado.ToString(),
-                    UltimosPagos = socio.UltimosPagos.Select(p => new Pago
-                    {
-                        FechaPago = p.FechaPago,
-                        Monto = p.Monto
-                    }).ToList()
+                    UltimosPagos = socio.UltimosPagos?.OrderByDescending(p => p.FechaPago).Take(5).ToList()
                 };
             }
             catch (Exception ex)

@@ -428,7 +428,6 @@ END;
 $$ LANGUAGE plpgsql;
 
 --
-
 DROP FUNCTION IF EXISTS Soc.FiltrarPagos;
 CREATE OR REPLACE FUNCTION Soc.FiltrarPagos(
     p_nombre VARCHAR,
@@ -436,7 +435,8 @@ CREATE OR REPLACE FUNCTION Soc.FiltrarPagos(
     p_numero_socio INT,
     p_fecha_inicio TIMESTAMP,
     p_fecha_fin TIMESTAMP,
-    p_incluir_dados_de_baja BOOLEAN
+    p_incluir_dados_de_baja BOOLEAN,
+    p_metodo_pago INT
 )
 RETURNS TABLE (
     Id INT,
@@ -445,11 +445,11 @@ RETURNS TABLE (
     FechaCuota TIMESTAMP,
     Monto DECIMAL(10, 2),
     Estado INT,
-    IdAdmin INT,
     MetodoPago INT,
     Comprobante VARCHAR,
-    Nombre VARCHAR,
-    Documento INT
+    Nombre TEXT,
+    Documento INT,
+    IdAdmin INT
 ) AS $$
 BEGIN
     RETURN QUERY
@@ -460,11 +460,11 @@ BEGIN
         p.FechaCuota,
         p.Monto,
         p.Estado,
-        p.IdAdmin,
         p.MetodoPago,
         p.Comprobante,
-        s.Nombre,
-        s.Documento
+        s.Nombre || ' ' || s.Apellido AS Nombre,
+        s.Documento,
+        p.idAdmin
     FROM Soc.Pago p
     JOIN Soc.Socio s ON p.IdSocio = s.Id
     WHERE 
@@ -473,7 +473,66 @@ BEGIN
         AND (p_numero_socio IS NULL OR s.Id = p_numero_socio)
         AND (p_fecha_inicio IS NULL OR p.FechaPago >= p_fecha_inicio)
         AND (p_fecha_fin IS NULL OR p.FechaPago < p_fecha_fin)
-        AND (p_incluir_dados_de_baja IS TRUE OR p.Estado = 1);
+        AND (p_incluir_dados_de_baja IS TRUE OR p.Estado = 1)
+        AND (p_metodo_pago IS NULL OR p.MetodoPago = p_metodo_pago)
+    ORDER BY p.FechaPago DESC;
+END;
+$$ LANGUAGE plpgsql;
+--
+
+DROP FUNCTION IF EXISTS Soc.ObtenerPagoPorId;
+CREATE OR REPLACE FUNCTION Soc.ObtenerPagoPorId(
+    p_id INT
+)
+RETURNS TABLE (
+    Id INT,
+    IdSocio INT,
+    FechaPago TIMESTAMP,
+    FechaCuota TIMESTAMP,
+    Monto DECIMAL(10, 2),
+    Estado INT,
+    MetodoPago INT,
+    Comprobante VARCHAR,
+    Nombre TEXT,
+    Documento INT,
+    IdAdmin INT
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        p.Id,
+        p.IdSocio,
+        p.FechaPago,
+        p.FechaCuota,
+        p.Monto,
+        p.Estado,
+        p.MetodoPago,
+        p.Comprobante,
+        s.Nombre || ' ' || s.Apellido AS Nombre,
+        s.Documento,
+        p.idAdmin
+    FROM Soc.Pago p
+    JOIN Soc.Socio s ON p.IdSocio = s.Id
+    WHERE p.Id = p_id;
+END;
+$$ LANGUAGE plpgsql;
+
+--
+
+DROP FUNCTION IF EXISTS Soc.ExistePagosPosteriores;
+CREATE OR REPLACE FUNCTION Soc.ExistePagosPosteriores(
+    p_id INT,
+    p_fecha_cuota TIMESTAMP
+)
+RETURNS BOOLEAN AS $$
+BEGIN
+    RETURN EXISTS (
+        SELECT 1
+        FROM Soc.Pago p
+        WHERE 
+            p.Id <> p_id
+            AND p.FechaCuota >= p_fecha_cuota
+    );
 END;
 $$ LANGUAGE plpgsql;
 

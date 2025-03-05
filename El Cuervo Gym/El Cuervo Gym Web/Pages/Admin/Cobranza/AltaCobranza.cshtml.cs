@@ -29,7 +29,7 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Cobranza
             public string Nombre { get; set; }
             public string Documento { get; set; }
             public string NumeroSocio { get; set; }
-            [DataType(DataType.Date)]
+            [DataType(DataType.DateTime)]
             public DateTime FechaPago { get; set; }
             public DateTime FechaCuota { get; set; }
             public int Monto { get; set; }
@@ -47,12 +47,15 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Cobranza
                 var socio = await _socioService.ObtenerSocioPorId(socioId);
                 var valorCuota = _parametros.ObtenerTodosLosParametros().FirstOrDefault(x => x.Clave == Helper.ValorCuotaParamName);
 
+                var now = DateTime.Now;
+                var fechaPago = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0);
+
                 Cobranza = new CobranzaModel()
                 {
                     Nombre = $"{socio.Nombre} {socio.Apellido}",
                     Documento = socio.Documento.ToString(),
                     NumeroSocio = socio.Id.ToString(),
-                    FechaPago = DateTime.Now,
+                    FechaPago = fechaPago,
                     FechaCuota = socio.ProximoVencimientoCuota,
                     Monto = valorCuota != null ? int.Parse(valorCuota.Valor) : 0
                 };
@@ -101,7 +104,3 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Cobranza
         }
     }
 }
-
-
-
-

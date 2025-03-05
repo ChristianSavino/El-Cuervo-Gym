@@ -1,9 +1,9 @@
 ﻿using El_Cuervo_Gym_Web.Core.Cobranza.DataAccess;
 using El_Cuervo_Gym_Web.Core.Cobranza.Domain;
+using El_Cuervo_Gym_Web.Core.Cobranza.Domain.Request;
 using El_Cuervo_Gym_Web.Core.Parametros.Logic;
 using El_Cuervo_Gym_Web.Core.Socio.Domain;
 using El_Cuervo_Gym_Web.Core.Utils;
-using El_Cuervo_Gym_Web.Pages.Admin.Cobranza;
 
 namespace El_Cuervo_Gym_Web.Core.Cobranza.Logic
 {
@@ -42,7 +42,27 @@ namespace El_Cuervo_Gym_Web.Core.Cobranza.Logic
             return await InsertarCobranza(pago);
         }
 
-        public async Task<IEnumerable<PagoListado>> ObtenerCobranzasFiltro(ListarCobranzasModel.FiltroModel filtro)
+        public async Task<PagoListado> ObtenerCobranzaPorId(int idCobranza)
+        {
+            return await _cobranzaDataAccess.ObtenerCobranzaPorId(idCobranza);
+        }
+
+        public async Task<(PagoListado cobranza, bool existenPagosPosteriores)> ObtenerCobranzaPorIdValidada(int idCobranza)
+        {
+            var cobranza = await ObtenerCobranzaPorId(idCobranza);
+
+            var filtroCobranza = new FiltroCobranza
+            {
+                FechaCuota = cobranza.FechaCuota,
+                Id = cobranza.Id
+            };
+
+            var existePagosPosteriores = await _cobranzaDataAccess.ExistePagosPosteriores(filtroCobranza);
+
+            return (cobranza, existePagosPosteriores);
+        }
+
+        public async Task<IEnumerable<PagoListado>> ObtenerCobranzasFiltro(FiltroCobranza filtro)
         {
             return await _cobranzaDataAccess.ObtenerCobranzasFiltro(filtro);
         }

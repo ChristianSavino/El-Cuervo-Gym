@@ -50,29 +50,36 @@
     </div>
 
     <h3 class="mb-3">Listado Socios</h3>
-    <table class="table table-striped">
-        <thead class="thead-dark">
-            <tr>
-                <th>Nombre</th>
-                <th>Documento</th>
-                <th>Número de Socio</th>
-                <th>Fecha de Inscripción</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var socio in Model.Socios)
-            {
+    @if (Model.Socios != null && Model.Socios.Any())
+    {
+        <table class="table table-striped">
+            <thead class="thead-dark">
                 <tr>
-                    <td>@socio.Nombre</td>
-                    <td>@socio.Documento</td>
-                    <td>@socio.Id</td>
-                    <td>@socio.FechaSubscripcion.ToString("dd/MM/yyyy")</td>
-                    <td>
-                        <a href="/Admin/Socio/DetalleSocio/@socio.Id" class="btn btn-dark">Ver Detalles</a>
-                    </td>
+                    <th>Nombre</th>
+                    <th>Documento</th>
+                    <th>Número de Socio</th>
+                    <th>Fecha de Inscripción</th>
+                    <th>Acciones</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var socio in Model.Socios)
+                {
+                    <tr>
+                        <td>@socio.Nombre</td>
+                        <td>@socio.Documento</td>
+                        <td>@socio.Id</td>
+                        <td>@socio.FechaSubscripcion.ToString("dd/MM/yyyy")</td>
+                        <td>
+                            <a href="/Admin/Socio/DetalleSocio/@socio.Id" class="btn btn-dark">Ver Detalles</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No hay socios registrados que coincidan con los filtros.</p>
+    }
 </div>
