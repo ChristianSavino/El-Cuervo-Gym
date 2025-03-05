@@ -3,6 +3,7 @@ using El_Cuervo_Gym_Web.Core.Admin.Logic;
 using El_Cuervo_Gym_Web.Core.Socio.Domain;
 using El_Cuervo_Gym_Web.Core.Socio.Logic;
 using El_Cuervo_Gym_Web.Core.Utils;
+using El_Cuervo_Gym_Web.Core.Utils.Logging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
@@ -14,11 +15,13 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
     {
         private readonly IAdminService _adminService;
         private readonly ISocioService _socioService;
+        private readonly ICLogger _logger;
 
-        public ModificarSocioModel(IAdminService adminService, ISocioService socioService)
+        public ModificarSocioModel(IAdminService adminService, ISocioService socioService, ICLogger logger)
         {
             _socioService = socioService;
             _adminService = adminService;
+            _logger = logger;
         }   
 
         public class SocioModel
@@ -64,22 +67,30 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
 
         public async Task OnGet(int socioId)
         {
-            var socio = await _socioService.ObtenerSocioPorId(socioId);
-
-            Socio = new SocioModel
+            try
             {
-                Id = socio.Id,
-                Nombre = socio.Nombre,
-                Apellido = socio.Apellido,
-                Documento = socio.Documento,
-                Telefono = socio.Telefono,
-                ObraSocial = socio.ObraSocial,
-                NumeroObraSocial = socio.NumeroObraSocial,
-                NumeroEmergencia = socio.NumeroEmergencia,
-                ContactoEmergencia = socio.ContactoEmergencia,
-                FechaSubscripcion = socio.FechaSubscripcion,
-                Estado = socio.Estado
-            };
+                var socio = await _socioService.ObtenerSocioPorId(socioId);
+
+                Socio = new SocioModel
+                {
+                    Id = socio.Id,
+                    Nombre = socio.Nombre,
+                    Apellido = socio.Apellido,
+                    Documento = socio.Documento,
+                    Telefono = socio.Telefono,
+                    ObraSocial = socio.ObraSocial,
+                    NumeroObraSocial = socio.NumeroObraSocial,
+                    NumeroEmergencia = socio.NumeroEmergencia,
+                    ContactoEmergencia = socio.ContactoEmergencia,
+                    FechaSubscripcion = socio.FechaSubscripcion,
+                    Estado = socio.Estado
+                };
+            }
+            catch (Exception ex)
+            {
+                var contexto = "Modificar Socio";
+                RedirectToPage(await _logger.LogError(ex, contexto, string.Empty), new { accion = contexto, mensajeError = ex.Message });
+            }
         }
 
         public async Task<IActionResult> OnPost()
@@ -89,25 +100,34 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
                 return Page();
             }
 
-            var admin = JsonConvert.DeserializeObject<DatosAdminLogin>(HttpContext.Session.GetString("Admin"));
-
-            var socio = new DatosSocio
+            try
             {
-                Id = Socio.Id,
-                Nombre = Socio.Nombre,
-                Apellido = Socio.Apellido,
-                Documento = Socio.Documento,
-                Telefono = Socio.Telefono,
-                ObraSocial = Socio.ObraSocial,
-                NumeroObraSocial = Socio.NumeroObraSocial,
-                NumeroEmergencia = Socio.NumeroEmergencia,
-                ContactoEmergencia = Socio.ContactoEmergencia,
-                FechaSubscripcion = Socio.FechaSubscripcion,
-                Estado = Socio.Estado,
-                IdAdmin = admin.Id
-            };
+                var admin = JsonConvert.DeserializeObject<DatosAdminLogin>(HttpContext.Session.GetString("Admin"));
 
-            OperacionExitosa = await _adminService.ActualizarSocio(socio);
+                var socio = new DatosSocio
+                {
+                    Id = Socio.Id,
+                    Nombre = Socio.Nombre,
+                    Apellido = Socio.Apellido,
+                    Documento = Socio.Documento,
+                    Telefono = Socio.Telefono,
+                    ObraSocial = Socio.ObraSocial,
+                    NumeroObraSocial = Socio.NumeroObraSocial,
+                    NumeroEmergencia = Socio.NumeroEmergencia,
+                    ContactoEmergencia = Socio.ContactoEmergencia,
+                    FechaSubscripcion = Socio.FechaSubscripcion,
+                    Estado = Socio.Estado,
+                    IdAdmin = admin.Id
+                };
+
+                OperacionExitosa = await _adminService.ActualizarSocio(socio);
+            }
+            catch (Exception ex)
+            {
+                var contexto = "Modificar Socio";
+                RedirectToPage(await _logger.LogError(ex, contexto, string.Empty), new { accion = contexto, mensajeError = ex.Message });
+            }
+
             return Page();
         }
     }

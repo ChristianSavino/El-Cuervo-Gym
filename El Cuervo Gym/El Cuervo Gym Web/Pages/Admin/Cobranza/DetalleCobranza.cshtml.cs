@@ -36,24 +36,31 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Cobranza
 
         public async Task OnGet(int cobranzaId)
         {
-            var result = await _cobranzaService.ObtenerCobranzaPorIdValidada(cobranzaId);
-
-
-            Cobranza = new CobranzaModel
+            try
             {
-                Id = result.cobranza.Id,
-                Nombre = result.cobranza.Nombre,
-                Documento = result.cobranza.Documento,
-                IdSocio = result.cobranza.IdSocio,
-                FechaPago = result.cobranza.FechaPago,
-                FechaCuota = result.cobranza.FechaCuota,
-                Monto = result.cobranza.Monto,
-                MetodoPago = result.cobranza.MetodoPago,
-                Comprobante = result.cobranza.Comprobante,
-                Estado = result.cobranza.Estado
-            };
+                var result = await _cobranzaService.ObtenerCobranzaPorIdValidada(cobranzaId);
 
-            ExistenPagosPosteriores = result.existenPagosPosteriores;
+                Cobranza = new CobranzaModel
+                {
+                    Id = result.cobranza.Id,
+                    Nombre = result.cobranza.Nombre,
+                    Documento = result.cobranza.Documento,
+                    IdSocio = result.cobranza.IdSocio,
+                    FechaPago = result.cobranza.FechaPago,
+                    FechaCuota = result.cobranza.FechaCuota,
+                    Monto = result.cobranza.Monto,
+                    MetodoPago = result.cobranza.MetodoPago,
+                    Comprobante = result.cobranza.Comprobante,
+                    Estado = result.cobranza.Estado
+                };
+
+                ExistenPagosPosteriores = result.existenPagosPosteriores;
+            }
+            catch (Exception ex)
+            {
+                var contexto = "Detalle de Cobranzas";
+                RedirectToPage(await _logger.LogError(ex, contexto, string.Empty), new { accion = contexto, mensajeError = ex.Message });
+            }         
         }
     }
 }
