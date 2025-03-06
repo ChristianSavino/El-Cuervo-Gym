@@ -11,8 +11,8 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Master
 {
     public class AltaAdminModel : PageModel
     {
-        private ICLogger _logger;
-        private IAdminService _adminService;
+        private readonly ICLogger _logger;
+        private readonly IAdminService _adminService;
 
         public AltaAdminModel(ICLogger logger, IAdminService adminService)
         {

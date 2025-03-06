@@ -1,5 +1,31 @@
-﻿@page
+﻿@page "{adminId:int}"
 @model El_Cuervo_Gym_Web.Pages.Admin.Master.DetallesAdminModel
 @{
     Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Detalles del Admin";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4">Detalles del Socio</h2>
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">@Model.Admin.Usuario</h5>
+            <p class="card-text"><strong>Es Maestro?:</strong> @(Model.Admin.IsMaster ? "Si" : "No")</p>
+            <p class="card-text"><strong>Estado:</strong> @Model.Admin.Estado</p>
+            <div class="mt-4">
+                <a href="/Admin/Master/ModificarAdmin/@Model.Admin.Id" class="btn btn-primary">Modificar</a>
+                <button class="btn btn-danger" onclick="confirmarBaja(@Model.Admin.Id)" @(Model.DadoBaja ? "disabled" : "")>Dar de Baja</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function confirmarBaja(adminId) {
+            if (confirm("¿Estás seguro de que deseas dar de baja a este admin?")) {
+                window.location.href = '/Admin/Master/BajaAdmin/' + adminId;
+            }
+        }
+    </script>
 }

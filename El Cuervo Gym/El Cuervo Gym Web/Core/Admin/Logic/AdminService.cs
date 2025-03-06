@@ -1,5 +1,6 @@
 ﻿using El_Cuervo_Gym_Web.Core.Admin.DataAccess;
 using El_Cuervo_Gym_Web.Core.Admin.Domain;
+using El_Cuervo_Gym_Web.Core.Admin.Domain.Requests;
 using El_Cuervo_Gym_Web.Core.Cobranza.Domain;
 using El_Cuervo_Gym_Web.Core.Cobranza.Logic;
 using El_Cuervo_Gym_Web.Core.Socio.Domain;
@@ -83,6 +84,26 @@ namespace El_Cuervo_Gym_Web.Core.Admin.Logic
         public async Task<int> InsertarAdmin(DatosAdmin admin)
         {
             return await _dataAccess.InsertarAdmin(admin);
+        }
+
+        public async Task<IEnumerable<DatosAdmin>> FiltrarAdmins(FiltroAdmin filtro)
+        {
+            return await _dataAccess.FiltrarAdmins(filtro);
+        }
+
+        public async Task<DatosAdmin> ObtenerAdminPorId(int adminId)
+        {
+            return await _dataAccess.ObtenerAdminPorId(adminId);
+        }
+
+        public async Task<bool> ActualizarAdmin(DatosAdmin admin)
+        {
+            return await _dataAccess.ActualizarAdmin(admin);
+        }
+
+        public async Task DarDeBajaAdmin(int adminId)
+        {
+            await _dataAccess.DarDeBajaAdmin(adminId);
         }
     }
 }

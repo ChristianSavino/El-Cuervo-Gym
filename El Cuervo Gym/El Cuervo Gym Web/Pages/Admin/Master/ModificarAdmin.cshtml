@@ -1,5 +1,75 @@
-﻿@page
+﻿@page "{adminId:int}"
 @model El_Cuervo_Gym_Web.Pages.Admin.Master.ModificarAdminModel
 @{
     Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Modificar Admin";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4">Alta de Admin</h2>
+    @if (Model.OperacionExitosa)
+    {
+        <div class="alert alert-success" role="alert">
+            ¡Admin modificado correctamente! Redirigiendo a la lista de admins...
+        </div>
+        <script>
+            setTimeout(function () {
+            window.location.href = '/Admin/Master/ListarAdmin';
+            }, 3000);
+        </script>
+    }
+    else
+    {
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="post">
+                    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                    {
+                        <div class="alert alert-danger" role="alert">
+                            @Model.ErrorMessage
+                        </div>
+                    }
+                    <input type="hidden" name="Admin.Id" value="@Model.Admin.Id" />
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="Admin.Usuario">Usuario</label>
+                            <input asp-for="Admin.Usuario" class="form-control" />
+                            <span asp-validation-for="Admin.Usuario" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="Admin.Password">Contraseña</label>
+                            <input asp-for="Admin.Password" class="form-control" />
+                            <span asp-validation-for="Admin.Password" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <div class="form-check">
+                                <input asp-for="Admin.IsMaster" class="form-check-input" />
+                                <label class="form-check-label" asp-for="Admin.IsMaster">Es Usuario Maestro?</label>
+                            </div>
+                            <span asp-validation-for="Admin.IsMaster" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="Admin.Estado">Estado</label>
+                            <select asp-for="Admin.Estado" class="form-control">
+                                <option value="Activo">Activo</option>
+                                <option value="Baja">Baja</option>
+                            </select>
+                            <span asp-validation-for="Admin.Estado" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-dark">Dar de Alta</button>
+                </form>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 }

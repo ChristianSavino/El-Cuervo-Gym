@@ -112,6 +112,108 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+--
+
+DROP FUNCTION IF EXISTS adm.FiltrarAdmin;
+CREATE OR REPLACE FUNCTION adm.FiltrarAdmin(
+    p_usuario VARCHAR,
+    p_id INT,
+    p_incluir_dados_de_baja BOOLEAN
+)
+RETURNS TABLE (
+    Id INT,
+    Usuario VARCHAR,
+    Estado INT,
+    IsMaster BOOLEAN
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        a.Id,
+        a.Usuario,
+        a.Estado,
+        a.IsMaster
+    FROM Adm.Admin a
+    WHERE 
+        (p_usuario IS NULL OR a.usuario::TEXT ILIKE '%' || p_usuario || '%')
+        AND (p_id IS NULL OR a.Id = p_id)
+        AND (p_incluir_dados_de_baja IS TRUE OR a.Estado = 1)
+    ORDER BY a.Id;
+END;
+$$ LANGUAGE plpgsql;
+
+--
+
+DROP FUNCTION IF EXISTS adm.ObtenerAdminPorId;
+CREATE OR REPLACE FUNCTION adm.ObtenerAdminPorId(
+    p_id INT
+)
+RETURNS TABLE (
+    Id INT,
+    Usuario VARCHAR,
+    Estado INT,
+    IsMaster BOOLEAN
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        a.Id,
+        a.Usuario,
+        a.Estado,
+        a.IsMaster
+    FROM Adm.Admin a
+    WHERE 
+        a.Id = p_id;
+END;
+$$ LANGUAGE plpgsql;
+
+--
+
+DROP FUNCTION IF EXISTS Adm.ActualizarAdmin;
+CREATE OR REPLACE FUNCTION Adm.ActualizarAdmin(
+    p_id INT,
+    p_usuario VARCHAR,
+    p_password VARCHAR,
+    p_estado INT,
+    p_is_master BOOLEAN
+)
+RETURNS INT AS $$
+DECLARE
+    v_affected_rows INT;
+BEGIN
+    UPDATE Adm.Admin
+    SET
+        Usuario = p_usuario,
+        Password = MD5(p_password),
+        Estado = p_estado,
+        IsMaster = p_is_master
+    WHERE 
+        Id = p_id;
+
+    GET DIAGNOSTICS v_affected_rows = ROW_COUNT;
+    RETURN v_affected_rows;
+END;
+$$ LANGUAGE plpgsql;
+
+--
+
+DROP FUNCTION IF EXISTS Adm.DarDeBajaAdmin;
+CREATE OR REPLACE FUNCTION Adm.DarDeBajaAdmin(
+    p_id INT
+)
+RETURNS INT AS $$
+DECLARE
+    v_affected_rows INT;
+BEGIN
+    UPDATE Adm.Admin
+    SET Estado = 2
+    WHERE Id = p_id;
+
+    GET DIAGNOSTICS v_affected_rows = ROW_COUNT;
+    RETURN v_affected_rows;
+END;
+$$ LANGUAGE plpgsql;
+
 -- FUNC SOCIO
 
 DROP FUNCTION IF EXISTS Soc.InsertarSocio;
@@ -210,13 +312,14 @@ BEGIN
         s.IdAdmin
     FROM Soc.Socio s
     WHERE 
-        (p_nombre IS NULL OR (s.Nombre ILIKE '%' || p_nombre || '%' OR s.apellido ILIKE '%' || p_nombre || '%'))
+        (p_nombre IS NULL OR (s.Nombre ILIKE '%' || p_nombre || '%' OR s.Apellido ILIKE '%' || p_nombre || '%'))
         AND (p_documento IS NULL OR s.Documento::TEXT ILIKE '%' || p_documento || '%')
         AND (p_numero_socio IS NULL OR s.Id::TEXT ILIKE '%' || p_numero_socio || '%')
         AND (p_fecha_inicio IS NULL OR s.FechaSubscripcion >= p_fecha_inicio)
         AND (p_fecha_fin IS NULL OR s.FechaSubscripcion < p_fecha_fin)
         AND (p_cuotas_vencidas IS FALSE OR s.ProximoVencimientoCuota < CURRENT_DATE)
-        AND (p_incluir_dados_de_baja IS TRUE OR s.Estado = 1);
+        AND (p_incluir_dados_de_baja IS TRUE OR s.Estado = 1)
+    ORDER BY s.FechaSubscripcion DESC;
 END;
 $$ LANGUAGE plpgsql;
 

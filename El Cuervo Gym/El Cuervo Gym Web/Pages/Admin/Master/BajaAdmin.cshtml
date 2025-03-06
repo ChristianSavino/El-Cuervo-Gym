@@ -1,5 +1,20 @@
-﻿@page
+﻿@page "{adminId:int}"
 @model El_Cuervo_Gym_Web.Pages.Admin.Master.BajaAdminModel
 @{
     Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Confirmación de Baja de Admin";
+}
+
+<div class="container mt-5">
+    <div class="alert alert-success" role="alert">
+        El admin ha sido dada de baja correctamente. Redirigiendo a la lista de admins...
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        setTimeout(function () {
+            window.location.href = '/Admin/Master/ListarAdmin';
+        }, 3000);
+    </script>
 }
