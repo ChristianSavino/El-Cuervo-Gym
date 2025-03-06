@@ -19,5 +19,19 @@ namespace El_Cuervo_Gym_Web.Core.Admin.DataAccess
 
             return await _connection.QueryAsync<DatosAdminLogin>(query, parameters);
         }
+
+        public async Task<int> InsertarAdmin(DatosAdmin admin)
+        {
+            var query = "SELECT adm.InsertarAdmin(@Usuario, @Password, @Estado, @IsMaster)";
+            var parameters = new
+            {
+                admin.Usuario,
+                admin.Password,
+                admin.Estado,
+                admin.IsMaster
+            };
+
+            return await _connection.QuerySingleAsync<int>(query, parameters);
+        }
     }
 }

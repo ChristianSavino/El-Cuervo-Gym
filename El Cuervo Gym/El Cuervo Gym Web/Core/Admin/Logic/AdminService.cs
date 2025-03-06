@@ -79,5 +79,10 @@ namespace El_Cuervo_Gym_Web.Core.Admin.Logic
             await _cobranzaService.DarDeBajaComprobante(idComprobante);
             await _socioService.ActualizarProximaFechaVencimiento(comprobante.IdSocio, comprobante.FechaCuota);
         }
+
+        public async Task<int> InsertarAdmin(DatosAdmin admin)
+        {
+            return await _dataAccess.InsertarAdmin(admin);
+        }
     }
 }

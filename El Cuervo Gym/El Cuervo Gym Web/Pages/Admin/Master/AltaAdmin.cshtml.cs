@@ -1,5 +1,6 @@
 using El_Cuervo_Gym_Web.Core.Admin.Domain;
 using El_Cuervo_Gym_Web.Core.Admin.Logic;
+using El_Cuervo_Gym_Web.Core.Utils;
 using El_Cuervo_Gym_Web.Core.Utils.Logging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -34,6 +35,7 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Master
         [BindProperty]
         public AltaAdmin NuevoAdmin { get; set; }
         public string ErrorMessage { get; set; }
+        public bool OperacionExitosa { get; set; }
 
         public void OnGet()
         {
@@ -53,11 +55,13 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Master
                 {
                     Usuario = NuevoAdmin.Usuario,
                     Password = NuevoAdmin.Password,
-                    IsMaster = NuevoAdmin.IsMaster
+                    IsMaster = NuevoAdmin.IsMaster,
+                    Estado = Estado.Activo
                 };
 
-                //await _adminService.InsertarAdmin(admin);
-                return RedirectToPage("/Admin/Master/ListarAdmin");
+                await _adminService.InsertarAdmin(admin);
+                OperacionExitosa = true;
+                return Page();
             }
             catch (Exception ex)
             {

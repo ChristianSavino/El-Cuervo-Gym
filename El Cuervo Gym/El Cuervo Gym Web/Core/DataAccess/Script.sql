@@ -94,6 +94,24 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+--
+
+DROP FUNCTION IF EXISTS Adm.InsertarAdmin;
+CREATE OR REPLACE FUNCTION Adm.InsertarAdmin(
+    p_usuario VARCHAR,
+    p_password VARCHAR,
+    p_estado INT,
+    p_is_master BOOLEAN
+)
+RETURNS INT AS $$
+DECLARE
+    v_id INT;
+BEGIN
+    INSERT INTO adm.Admin (Usuario, Password, Estado, IsMaster) VALUES (p_usuario, MD5(p_password), p_estado, p_is_master) RETURNING Id INTO v_id;
+    RETURN v_id;
+END;
+$$ LANGUAGE plpgsql;
+
 -- FUNC SOCIO
 
 DROP FUNCTION IF EXISTS Soc.InsertarSocio;

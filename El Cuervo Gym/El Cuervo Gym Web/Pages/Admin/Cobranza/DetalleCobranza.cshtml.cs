@@ -32,7 +32,7 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Cobranza
 
         public CobranzaModel Cobranza { get; set; }
         public bool ExistenPagosPosteriores { get; set; }
-
+        public bool DadoBaja { get; set; }
 
         public async Task OnGet(int cobranzaId)
         {
@@ -54,7 +54,11 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Cobranza
                     Estado = result.cobranza.Estado
                 };
 
-                ExistenPagosPosteriores = result.existenPagosPosteriores;
+                DadoBaja = result.cobranza.Estado == Estado.Baja;
+                if(!DadoBaja)
+                {
+                    ExistenPagosPosteriores = result.existenPagosPosteriores;
+                }           
             }
             catch (Exception ex)
             {

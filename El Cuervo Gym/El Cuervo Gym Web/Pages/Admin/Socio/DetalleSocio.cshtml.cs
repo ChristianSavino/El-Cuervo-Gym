@@ -1,5 +1,6 @@
 using El_Cuervo_Gym_Web.Core.Cobranza.Domain;
 using El_Cuervo_Gym_Web.Core.Socio.Logic;
+using El_Cuervo_Gym_Web.Core.Utils;
 using El_Cuervo_Gym_Web.Core.Utils.Logging;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -34,6 +35,7 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
         }
 
         public SocioModel Socio { get; set; }
+        public bool DadoBaja { get; set; }
 
         public async Task OnGet(int socioId)
         {
@@ -57,6 +59,8 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
                     Estado = socio.Estado.ToString(),
                     UltimosPagos = socio.UltimosPagos?.OrderByDescending(p => p.FechaPago).Take(5).ToList()
                 };
+
+                DadoBaja = socio.Estado == Estado.Baja;
             }
             catch (Exception ex)
             {

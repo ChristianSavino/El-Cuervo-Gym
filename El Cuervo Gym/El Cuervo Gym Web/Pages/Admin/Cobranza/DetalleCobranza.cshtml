@@ -19,7 +19,7 @@
             <p class="card-text"><strong>Método de Pago:</strong> @Model.Cobranza.MetodoPago</p>
             <p class="card-text"><strong>Comprobante:</strong> @Model.Cobranza.Comprobante</p>
             <div class="mt-4">
-                <button class="btn btn-danger" onclick="confirmarBaja(@Model.Cobranza.Id)" @(Model.ExistenPagosPosteriores ? "disabled" : "")>Dar de Baja</button>
+                <button class="btn btn-danger" onclick="confirmarBaja(@Model.Cobranza.Id)" @(Model.ExistenPagosPosteriores || Model.DadoBaja ? "disabled" : "")>Dar de Baja</button>
                 @if (Model.ExistenPagosPosteriores)
                 {
                     <p class="text-danger mt-2">No se puede dar de baja el comprobante porque existen pagos posteriores.</p>

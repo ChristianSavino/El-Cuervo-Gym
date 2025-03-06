@@ -7,40 +7,56 @@
 
 <div class="container mt-5">
     <h2 class="mb-4">Alta de Socio</h2>
-    <div class="card mb-4">
-        <div class="card-body">
-            <form method="post">
-                @if (!string.IsNullOrEmpty(Model.ErrorMessage))
-                {
-                    <div class="alert alert-danger" role="alert">
-                        @Model.ErrorMessage
-                    </div>
-                }
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label asp-for="NuevoAdmin.Usuario">Usuario</label>
-                        <input asp-for="NuevoAdmin.Usuario" class="form-control" />
-                        <span asp-validation-for="NuevoAdmin.Usuario" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label asp-for="NuevoAdmin.Password">Contraseña</label>
-                        <input asp-for="NuevoAdmin.Password" class="form-control" />
-                        <span asp-validation-for="NuevoAdmin.Password" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label asp-for="NuevoAdmin.IsMaster">Documento</label>
-                        <input asp-for="NuevoAdmin.IsMaster" class="form-control" type="checkbox" />
-                        <span asp-validation-for="NuevoAdmin.IsMaster" class="text-danger"></span>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-dark">Dar de Alta</button>
-            </form>
+    @if (Model.OperacionExitosa)
+    {
+        <div class="alert alert-success" role="alert">
+            ¡Admin dado de Alta correctamente! Redirigiendo a la lista de admins...
         </div>
-    </div>
+        <script>
+            setTimeout(function () {
+            window.location.href = '/Admin/Master/ListarAdmin';
+            }, 3000);
+        </script>
+    }
+    else
+    {
+        <div class="card mb-4">
+            <div class="card-body">
+                <form method="post">
+                    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                    {
+                        <div class="alert alert-danger" role="alert">
+                            @Model.ErrorMessage
+                        </div>
+                    }
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="NuevoAdmin.Usuario">Usuario</label>
+                            <input asp-for="NuevoAdmin.Usuario" class="form-control" />
+                            <span asp-validation-for="NuevoAdmin.Usuario" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="NuevoAdmin.Password">Contraseña</label>
+                            <input asp-for="NuevoAdmin.Password" class="form-control" />
+                            <span asp-validation-for="NuevoAdmin.Password" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <div class="form-check">
+                                <input asp-for="NuevoAdmin.IsMaster" class="form-check-input" />
+                                <label class="form-check-label" asp-for="NuevoAdmin.IsMaster">Es Usuario Maestro?</label>
+                            </div>
+                            <span asp-validation-for="NuevoAdmin.IsMaster" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-dark">Dar de Alta</button>
+                </form>
+            </div>
+        </div>
+    }
 </div>
 
 @section Scripts {
