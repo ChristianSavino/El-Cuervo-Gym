@@ -19,7 +19,7 @@
             <p class="card-text"><strong>Fecha de Subscripción:</strong> @Model.Socio.FechaSubscripcion.ToString("dd/MM/yyyy")</p>
             <p class="card-text"><strong>Próximo Vencimiento de Cuota:</strong> @Model.Socio.ProximoVencimientoCuota.ToString("dd/MM/yyyy")</p>
             <p class="card-text"><strong>Estado:</strong> @Model.Socio.Estado</p>
-            <div class="mt-4">
+            <div class="d-flex gap-2 mt-4">
                 <a href="/Admin/Socio/ModificarSocio/@Model.Socio.Id" class="btn btn-primary">Modificar</a>
                 <button class="btn btn-danger" onclick="confirmarBaja(@Model.Socio.Id)" @(Model.DadoBaja ? "disabled" : "")>Dar de Baja</button>
                 <a href="/Admin/Cobranza/AltaCobranza/@Model.Socio.Id" class="btn btn-success">Efectuar Cobranza</a>

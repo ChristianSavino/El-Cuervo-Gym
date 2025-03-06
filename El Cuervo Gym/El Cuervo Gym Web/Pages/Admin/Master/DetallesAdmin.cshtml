@@ -12,7 +12,7 @@
             <h5 class="card-title">@Model.Admin.Usuario</h5>
             <p class="card-text"><strong>Es Maestro?:</strong> @(Model.Admin.IsMaster ? "Si" : "No")</p>
             <p class="card-text"><strong>Estado:</strong> @Model.Admin.Estado</p>
-            <div class="mt-4">
+            <div class="d-flex gap-2 mt-4">
                 <a href="/Admin/Master/ModificarAdmin/@Model.Admin.Id" class="btn btn-primary">Modificar</a>
                 <button class="btn btn-danger" onclick="confirmarBaja(@Model.Admin.Id)" @(Model.DadoBaja ? "disabled" : "")>Dar de Baja</button>
             </div>

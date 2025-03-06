@@ -61,6 +61,13 @@
     </div>
 
     <h3 class="mb-3">Cobranzas</h3>
+    <p class="mb-2">
+        <strong>Total de Cobranzas: </strong> @Model.Cobranzas.Count
+    </p>
+    <p class="mb-2">
+        <strong> Monto Total:</strong> @Model.Cobranzas.Sum(c => c.Monto).ToString("C")
+    </p>
+
     <table class="table table-striped">
         <thead class="thead-dark">
             <tr>
