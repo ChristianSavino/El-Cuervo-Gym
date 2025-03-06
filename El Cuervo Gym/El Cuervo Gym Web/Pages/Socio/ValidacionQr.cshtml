@@ -1,0 +1,77 @@
+﻿@page
+@model El_Cuervo_Gym_Web.Pages.Socio.ValidacionQrModel
+@{
+    Layout = "_LayoutUsuario";
+    ViewBag.Title = "Validación de QR";
+
+    var estadoColor = "bg-success"; // Verde por defecto
+
+    if (Model.Alerta)
+    {
+        estadoColor = "bg-warning"; // Amarillo si está atrasado o tiene 1 ingreso
+    }
+
+    if (Model.Prohibir)
+    {
+        estadoColor = "bg-danger"; // Rojo si está muy atrasado o tiene más de 1 ingreso
+    }
+
+}
+
+<div class="container mt-5">
+    <div class="card ">
+        <div class="card-header text-center text-white @estadoColor">
+            <img src="~/images/Cuervo Gym.png" alt="El Cuervo Gym" class="img-fluid" style="max-height: 150px; max-width: 150px;" />
+            <h2>
+                @if (estadoColor == "bg-success")
+                {
+                    <span class="badge bg-success">Puede Pasar</span>
+                }
+                else if (estadoColor == "bg-warning")
+                {
+                    <span class="badge bg-warning text-dark">Atrasado / 1 Ingreso</span>
+                }
+                else
+                {
+                    <span class="badge bg-danger">Muy Atrasado / +1 Ingreso</span>
+                }
+            </h2>
+            <h4>
+                @if (estadoColor == "bg-success")
+                {
+                    <span class="badge bg-success">Muestrale esto al staff</span>
+                }
+                else if (estadoColor == "bg-warning")
+                {
+                    <span class="badge bg-warning text-dark">Muestrale esto al staff</span>
+                }
+                else
+                {
+                    <span class="badge bg-danger">Muestrale esto al staff</span>
+                }
+            </h4>
+            <h4>
+                @if (estadoColor == "bg-success")
+                {
+                    <span class="badge bg-success">No cierres sesion!</span>
+                }
+                else if (estadoColor == "bg-warning")
+                {
+                    <span class="badge bg-warning text-dark">No cierres sesion!</span>
+                }
+                else
+                {
+                    <span class="badge bg-danger"> No cierres sesion!</span>
+                }
+            </h4>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">Estado del Socio</h5>
+            <p class="card-text"><strong>Nombre:</strong> @Model.Socio.Nombre @Model.Socio.Apellido</p>
+            <p class="card-text"><strong>Número de Socio:</strong> @Model.Socio.Id</p>
+            <p class="card-text"><strong>Documento:</strong> @Model.Socio.Documento</p>
+            <p class="card-text"><strong>Días Atrasado:</strong> @Model.DiasAtraso</p>
+            <p class="card-text"><strong>Cantidad de Ingresos Previos:</strong> @Model.IngresosPrevios</p>
+        </div>
+    </div>
+</div>

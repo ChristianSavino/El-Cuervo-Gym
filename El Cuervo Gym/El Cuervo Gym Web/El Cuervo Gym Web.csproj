@@ -9,7 +9,6 @@
 
   <ItemGroup>
     <Folder Include="Pages\Admin\Master\Responses\" />
-    <Folder Include="Pages\QR\" />
   </ItemGroup>
 
   <ItemGroup>

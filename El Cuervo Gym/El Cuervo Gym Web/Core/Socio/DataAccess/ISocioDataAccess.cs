@@ -12,5 +12,6 @@ namespace El_Cuervo_Gym_Web.Core.Socio.DataAccess
         Task<bool> ActualizarSocio(DatosSocio socio);
         Task<bool> DarDeBajaSocio(int socioId);
         Task<bool> ActualizarProximaFechaVencimiento(int socioId, DateTime fechaProxima);
+        Task<bool> LogearSocio(int documento, int nroSocio);
     }
 }

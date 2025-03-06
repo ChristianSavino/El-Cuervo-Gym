@@ -163,5 +163,13 @@ namespace El_Cuervo_Gym_Web.Core.Socio.DataAccess
             var affectedRows = await _connection.ExecuteScalarAsync<int>(query, parameters);
             return affectedRows > 0;
         }
+
+        public async Task<bool> LogearSocio(int documento, int nroSocio)
+        {
+            var query = "SELECT * FROM Soc.LogearSocio(@Documento, @Id)";
+            var parameters = new { Documento = documento, Id = nroSocio };
+
+            return await _connection.QuerySingleAsync<bool>(query, parameters);
+        }
     }
 }

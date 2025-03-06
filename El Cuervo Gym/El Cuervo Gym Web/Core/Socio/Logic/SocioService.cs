@@ -1,5 +1,4 @@
 ﻿using El_Cuervo_Gym_Web.Core.Cobranza.Domain;
-using El_Cuervo_Gym_Web.Core.Cobranza.Logic;
 using El_Cuervo_Gym_Web.Core.Socio.DataAccess;
 using El_Cuervo_Gym_Web.Core.Socio.Domain;
 using El_Cuervo_Gym_Web.Core.Socio.Domain.Request;
@@ -10,12 +9,10 @@ namespace El_Cuervo_Gym_Web.Core.Socio.Logic
     public class SocioService : ISocioService
     {
         private readonly ISocioDataAccess _socioDataAccess;
-        private readonly ICobranzaService _cobranzaService;
 
-        public SocioService(ISocioDataAccess socioDataAccess, ICobranzaService cobranzaService)
+        public SocioService(ISocioDataAccess socioDataAccess)
         {
             _socioDataAccess = socioDataAccess;
-            _cobranzaService = cobranzaService;
         }
 
         public async Task<int> InsertarSocio(DatosSocio socio)
@@ -71,6 +68,17 @@ namespace El_Cuervo_Gym_Web.Core.Socio.Logic
         public async Task<bool> ActualizarProximaFechaVencimiento(int socioId, DateTime fechaProxima)
         {
             return await _socioDataAccess.ActualizarProximaFechaVencimiento(socioId, fechaProxima);
+        }
+
+        public async Task<DatosSocio> LogearSocio(int documento, int nroSocio)
+        {
+            var socioExiste = await _socioDataAccess.LogearSocio(documento, nroSocio);
+            if(socioExiste)
+            {
+                return await _socioDataAccess.ObtenerSocioConPagosPorId(nroSocio);
+            }
+
+            throw new Exception("Usuario incorrecto");
         }
     }
 }

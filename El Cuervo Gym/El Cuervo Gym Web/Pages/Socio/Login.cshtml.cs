@@ -1,11 +1,20 @@
+using El_Cuervo_Gym_Web.Core.Socio.Logic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 
 namespace El_Cuervo_Gym_Web.Pages.User
 {
     public class LoginModel : PageModel
     {
+        private readonly ISocioService _socioService;
+
+        public LoginModel(ISocioService socioService)
+        {
+            _socioService = socioService;
+        }
+
         [BindProperty]
         public InputModel Input { get; set; }
 
@@ -27,25 +36,37 @@ namespace El_Cuervo_Gym_Web.Pages.User
         {
         }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPost()
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            if (Input.ID != "1" || Input.Socio != "1234")
+            try
             {
-                ErrorMessage = "Usuario o contraseña incorrecta.";
-                return Page();
+                var socio = await _socioService.LogearSocio(int.Parse(Input.ID), int.Parse(Input.Socio));
+                if(socio != null)
+                {
+                    HttpContext.Session.SetString("NombreSocio", socio.Nombre);
+                    HttpContext.Session.SetString("Socio", socio.Id.ToString());
+                }
+
+                if (IsQr)
+                {
+                    return RedirectToPage("/Socio/ValidacionQr");
+                }
+                else
+                {
+                    return RedirectToPage("/Socio/Menu");
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = ex.Message;
             }
 
-            if (IsQr)
-            {
-
-            }
-            
-            return RedirectToPage("/Index");
+            return Page();
         }
     }
 }

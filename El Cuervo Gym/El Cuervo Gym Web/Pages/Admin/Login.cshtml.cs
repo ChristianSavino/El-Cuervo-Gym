@@ -1,8 +1,8 @@
 using El_Cuervo_Gym_Web.Core.Admin.Logic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json;
 
 namespace El_Cuervo_Gym_Web.Pages.Admin
 {
@@ -46,7 +46,7 @@ namespace El_Cuervo_Gym_Web.Pages.Admin
                 var admin = await _adminService.ObtenerAdmin(Input.Username, Input.Password);
                 if (admin != null)
                 {
-                    var adminJson = JsonSerializer.Serialize(admin);
+                    var adminJson = JsonConvert.SerializeObject(admin);
                     HttpContext.Session.SetString("NombreUsuario",admin.Usuario);
                     HttpContext.Session.SetString("Admin", adminJson);
                     return RedirectToPage("/Admin/Menu");

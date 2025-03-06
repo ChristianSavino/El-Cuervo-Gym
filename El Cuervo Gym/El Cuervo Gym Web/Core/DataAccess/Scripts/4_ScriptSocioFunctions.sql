@@ -51,7 +51,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
---
+-- FILTRAR
 
 DROP FUNCTION IF EXISTS Soc.FiltrarSocios;
 CREATE OR REPLACE FUNCTION Soc.FiltrarSocios(
@@ -107,7 +107,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
---
+-- OBTENER POR ID
 
 DROP FUNCTION IF EXISTS Soc.ObtenerSocioPorId;
 CREATE OR REPLACE FUNCTION Soc.ObtenerSocioPorId(
@@ -149,7 +149,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
---
+-- OBTENER POR ID CON PAGOS
 
 DROP FUNCTION IF EXISTS Soc.ObtenerSocioConPagosPorId;
 CREATE OR REPLACE FUNCTION Soc.ObtenerSocioConPagosPorId(
@@ -209,7 +209,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
---
+-- UPDATE SOCIO
 
 DROP FUNCTION IF EXISTS Soc.ActualizarSocio;
 CREATE OR REPLACE FUNCTION Soc.ActualizarSocio(
@@ -252,7 +252,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
---
+-- BAJA SOCIO
 
 DROP FUNCTION IF EXISTS Soc.DarDeBajaSocio;
 CREATE OR REPLACE FUNCTION Soc.DarDeBajaSocio(
@@ -271,7 +271,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
---
+-- ACTUALIZAR FECHA VENCIMIENTO
 
 DROP FUNCTION IF EXISTS Soc.ActualizarProximaFechaVencimiento;
 CREATE OR REPLACE FUNCTION Soc.ActualizarProximaFechaVencimiento(
@@ -288,5 +288,28 @@ BEGIN
 
     GET DIAGNOSTICS v_affected_rows = ROW_COUNT;
     RETURN v_affected_rows;
+END;
+$$ LANGUAGE plpgsql;
+
+-- LOGIN POR NUMERO SOCIO Y DOCUMENTO
+
+DROP FUNCTION IF EXISTS Soc.LogearSocio;
+CREATE OR REPLACE FUNCTION Soc.LogearSocio(
+    p_documento INT,
+    p_numero_socio INT
+)
+RETURNS BOOLEAN AS $$
+DECLARE
+    v_exists BOOLEAN;
+BEGIN
+    SELECT EXISTS (
+        SELECT 1 
+        FROM Soc.Socio s
+        WHERE s.Documento = p_documento
+        AND s.Id = p_numero_socio
+        AND s.Estado = 1
+    ) INTO v_exists;
+
+    RETURN v_exists;
 END;
 $$ LANGUAGE plpgsql;

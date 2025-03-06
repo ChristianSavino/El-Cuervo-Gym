@@ -1,0 +1,51 @@
+﻿@page
+@model El_Cuervo_Gym_Web.Pages.Socio.MenuModel
+@{
+    Layout = "_LayoutUsuario";
+    ViewData["Title"] = "Menú Socio";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4">Detalles de Tu Membresía</h2>
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">@Model.Socio.Nombre @Model.Socio.Apellido</h5>
+            <p class="card-text"><strong>Documento:</strong> @Model.Socio.Documento</p>
+            <p class="card-text"><strong>Número de Socio:</strong> @Model.Socio.Id</p>
+            <p class="card-text"><strong>Teléfono:</strong> @Model.Socio.Telefono</p>
+            <p class="card-text"><strong>Obra Social:</strong> @Model.Socio.ObraSocial</p>
+            <p class="card-text"><strong>Número de Obra Social:</strong> @Model.Socio.NumeroObraSocial</p>
+            <p class="card-text"><strong>Número de Emergencia:</strong> @Model.Socio.NumeroEmergencia</p>
+            <p class="card-text"><strong>Contacto de Emergencia:</strong> @Model.Socio.ContactoEmergencia</p>
+            <p class="card-text"><strong>Fecha de Subscripción:</strong> @Model.Socio.FechaSubscripcion.ToString("dd/MM/yyyy")</p>
+            <p class="card-text"><strong>Próximo Vencimiento de Cuota:</strong> @Model.Socio.ProximoVencimientoCuota.ToString("dd/MM/yyyy")</p>
+        </div>
+    </div>
+    <h3 class="mb-3">Últimos Pagos</h3>
+    @if (Model.Socio.UltimosPagos != null && Model.Socio.UltimosPagos.Any())
+    {
+        <table class="table table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Fecha de Pago</th>
+                    <th>Monto</th>
+                    <th>Tipo de Pago</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var pago in Model.Socio.UltimosPagos)
+                {
+                    <tr>
+                        <td>@pago.FechaPago.ToString("dd/MM/yyyy")</td>
+                        <td>@pago.Monto.ToString("C")</td>
+                        <td>@pago.MetodoPago</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No tienes pagos registrados.</p>
+    }
+</div>
