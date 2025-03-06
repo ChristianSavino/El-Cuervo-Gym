@@ -11,5 +11,6 @@ namespace El_Cuervo_Gym_Web.Core.DataAccess
         Task<T> QuerySingleAsync<T>(string query, object parameters = null);
         Task ExecuteSqlScriptAsync(string scriptPath);
         Task LogError(Exception ex, string contexto, string extraInfo = "");
+        Task CorrerTablas();
     }
 }

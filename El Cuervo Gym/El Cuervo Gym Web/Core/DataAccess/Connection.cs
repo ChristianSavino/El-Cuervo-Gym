@@ -72,7 +72,7 @@ namespace El_Cuervo_Gym_Web.Core.DataAccess
                 Contexto = contexto,
                 TipoError = ex.GetType().Name,
                 MensajeException = ex.Message,
-                StackTrace = ex.StackTrace,
+                ex.StackTrace,
                 InfoExtra = extraInfo
             };
 
@@ -80,6 +80,16 @@ namespace El_Cuervo_Gym_Web.Core.DataAccess
             {
                 await dbConnection.ExecuteAsync(query, parameters);
             }
+        }
+
+        public async Task CorrerTablas()
+        {
+            await ExecuteSqlScriptAsync("Core/DataAccess/Scripts/0_ScriptTablas.sql");
+            await ExecuteSqlScriptAsync("Core/DataAccess/Scripts/1_ScriptAdminFunctions.sql");
+            await ExecuteSqlScriptAsync("Core/DataAccess/Scripts/2_ScriptParametroFunctions.sql");
+            await ExecuteSqlScriptAsync("Core/DataAccess/Scripts/3_ScriptErroresFunctions.sql");
+            await ExecuteSqlScriptAsync("Core/DataAccess/Scripts/4_ScriptSocioFunctions.sql");
+            await ExecuteSqlScriptAsync("Core/DataAccess/Scripts/5_ScriptPagoFunctions.sql");
         }
     }
 }

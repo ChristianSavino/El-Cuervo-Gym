@@ -28,7 +28,7 @@ app.MapRazorPages();
 using (var scope = app.Services.CreateScope())
 {
     var connection = scope.ServiceProvider.GetRequiredService<IConnection>();
-    await connection.ExecuteSqlScriptAsync("Core/DataAccess/Script.sql");
+    await connection.CorrerTablas();
 }
 
 app.Run();
