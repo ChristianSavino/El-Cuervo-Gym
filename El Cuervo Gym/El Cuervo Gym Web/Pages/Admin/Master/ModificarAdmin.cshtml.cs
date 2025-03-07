@@ -35,7 +35,7 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Master
         public bool OperacionExitosa { get; set; }
         public string ErrorMessage { get; set; }
 
-        public async Task OnGet(int adminId)
+        public async Task<IActionResult> OnGet(int adminId)
         {
             try
             {
@@ -52,8 +52,10 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Master
             catch (Exception ex)
             {
                 var contexto = "Modificar Admin";
-                RedirectToPage(await _logger.LogError(ex, contexto, string.Empty), new { accion = contexto, mensajeError = ex.Message });
+                return RedirectToPage(await _logger.LogError(ex, contexto, string.Empty), new { accion = contexto, mensajeError = ex.Message });
             }
+
+            return Page();
         }
 
         public async Task<IActionResult> OnPost()
@@ -74,7 +76,7 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Master
             catch (Exception ex)
             {
                 var contexto = "Modificar Admin";
-                RedirectToPage(await _logger.LogError(ex, contexto, string.Empty), new { accion = contexto, mensajeError = ex.Message });
+                return RedirectToPage(await _logger.LogError(ex, contexto, string.Empty), new { accion = contexto, mensajeError = ex.Message });
             }
 
             OperacionExitosa = true;

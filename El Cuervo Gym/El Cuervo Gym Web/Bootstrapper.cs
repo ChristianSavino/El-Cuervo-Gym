@@ -3,6 +3,8 @@ using El_Cuervo_Gym_Web.Core.Admin.Logic;
 using El_Cuervo_Gym_Web.Core.Cobranza.DataAccess;
 using El_Cuervo_Gym_Web.Core.Cobranza.Logic;
 using El_Cuervo_Gym_Web.Core.DataAccess;
+using El_Cuervo_Gym_Web.Core.Ingresos.DataAccess;
+using El_Cuervo_Gym_Web.Core.Ingresos.Logic;
 using El_Cuervo_Gym_Web.Core.Parametros.DataAccess;
 using El_Cuervo_Gym_Web.Core.Parametros.Logic;
 using El_Cuervo_Gym_Web.Core.Socio.DataAccess;
@@ -23,6 +25,8 @@ namespace El_Cuervo_Gym_Web.Configuration
             services.AddScoped<ICobranzaService, CobranzaService>();
             services.AddScoped<ICobranzaDataAccess, CobranzaDataAccess>();
             services.AddScoped<ICLogger, CLogger>();
+            services.AddScoped<IIngresoDataAccess, IngresoDataAccess>();
+            services.AddScoped<IIngresoService, IngresoService>();
 
             services.AddScoped<IParametrosDataAccess, ParametrosDataAccess>();
             services.AddScoped<IParametros, Parametros>();

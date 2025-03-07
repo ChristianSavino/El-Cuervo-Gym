@@ -1,6 +1,7 @@
 using El_Cuervo_Gym_Web.Core.Socio.Domain;
 using El_Cuervo_Gym_Web.Core.Socio.Logic;
 using El_Cuervo_Gym_Web.Core.Utils.Logging;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace El_Cuervo_Gym_Web.Pages.Socio
@@ -18,7 +19,7 @@ namespace El_Cuervo_Gym_Web.Pages.Socio
 
         public DatosSocio Socio { get; set; }
 
-        public async Task OnGet()
+        public async Task<IActionResult> OnGet()
         {
             try
             {
@@ -28,8 +29,10 @@ namespace El_Cuervo_Gym_Web.Pages.Socio
             catch (Exception ex)
             {
                 var contexto = "Detalle Membresía";
-                RedirectToPage(await _logger.LogError(ex, contexto, string.Empty), new { accion = contexto, mensajeError = ex.Message });
+                return RedirectToPage(await _logger.LogErrorSocio(ex, contexto, string.Empty), new { accion = contexto, mensajeError = ex.Message });
             }
+
+            return Page();
         }
     }
 }

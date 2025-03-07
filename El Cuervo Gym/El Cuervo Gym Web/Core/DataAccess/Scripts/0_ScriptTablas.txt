@@ -98,3 +98,16 @@ CREATE TABLE IF NOT EXISTS adm.Parametros (
 
 CREATE INDEX IF NOT EXISTS idx_parametros_clave
 ON adm.Parametros (Clave);
+
+-- INGRESO
+
+CREATE TABLE IF NOT EXISTS soc.Ingreso (
+    Id SERIAL PRIMARY KEY,
+    IdSocio INT NOT NULL,
+    FechaIngreso TIMESTAMP NOT NULL,
+    Estado INT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_ingreso_idsocio ON soc.Ingreso(IdSocio);
+CREATE INDEX IF NOT EXISTS idx_ingreso_fecha ON soc.Ingreso(FechaIngreso);
+CREATE INDEX IF NOT EXISTS idx_ingreso_fecha_idsocio ON soc.Ingreso(FechaIngreso, IdSocio);

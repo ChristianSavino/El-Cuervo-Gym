@@ -8,7 +8,7 @@
 
 <style>
     .baja {
-        color: red;
+    color: red;
     }
 </style>
 
@@ -61,40 +61,46 @@
     </div>
 
     <h3 class="mb-3">Cobranzas</h3>
-    <p class="mb-2">
-        <strong>Total de Cobranzas: </strong> @Model.Cobranzas.Count
-    </p>
-    <p class="mb-2">
-        <strong> Monto Total:</strong> @Model.Cobranzas.Sum(c => c.Monto).ToString("C")
-    </p>
-
-    <table class="table table-striped">
-        <thead class="thead-dark">
-            <tr>
-                <th>Nombre</th>
-                <th>Documento</th>
-                <th>Número de Socio</th>
-                <th>Fecha de Pago</th>
-                <th>Monto</th>
-                <th>Método de Pago</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var cobranza in Model.Cobranzas)
-            {
+    @if (Model.Cobranzas != null && Model.Cobranzas.Any())
+    {
+        <p class="mb-2">
+            <strong>Total de Cobranzas: </strong> @Model.Cobranzas.Count
+        </p>
+        <p class="mb-2">
+            <strong> Monto Total:</strong> @Model.Cobranzas.Sum(c => c.Monto).ToString("C")
+        </p>
+        <table class="table table-striped">
+            <thead class="thead-dark">
                 <tr>
-                    <td>@cobranza.Nombre @(cobranza.Estado == Estado.Baja ? "(Baja)" : "")</td>
-                    <td>@cobranza.Documento</td>
-                    <td>@cobranza.IdSocio</td>
-                    <td>@cobranza.FechaPago.ToString("dd/MM/yyyy")</td>
-                    <td>@cobranza.Monto.ToString("C")</td>
-                    <td>@cobranza.MetodoPago</td>
-                    <td>
-                        <a href="/Admin/Cobranza/DetalleCobranza/@cobranza.Id" class="btn btn-dark">Ver Detalles</a>
-                    </td>
+                    <th>Nombre</th>
+                    <th>Documento</th>
+                    <th>Número de Socio</th>
+                    <th>Fecha de Pago</th>
+                    <th>Monto</th>
+                    <th>Método de Pago</th>
+                    <th>Acciones</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var cobranza in Model.Cobranzas)
+                {
+                    <tr>
+                        <td>@cobranza.Nombre @(cobranza.Estado == Estado.Baja ? "(Baja)" : "")</td>
+                        <td>@cobranza.Documento</td>
+                        <td>@cobranza.IdSocio</td>
+                        <td>@cobranza.FechaPago.ToString("dd/MM/yyyy")</td>
+                        <td>@cobranza.Monto.ToString("C")</td>
+                        <td>@cobranza.MetodoPago</td>
+                        <td>
+                            <a href="/Admin/Cobranza/DetalleCobranza/@cobranza.Id" class="btn btn-dark">Ver Detalles</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No hay cobranzas registradas que coincidan con los filtros.</p>
+    }
 </div>

@@ -29,7 +29,7 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Master
         public AdminFiltro Filtro { get; set; }
         public List<DatosAdmin> Admins { get; set; }
 
-        public async Task OnGet()
+        public async Task<IActionResult> OnGet()
         {
             try
             {
@@ -57,8 +57,10 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Master
             catch (Exception ex)
             {
                 var contexto = "Listar Admin";
-                RedirectToPage(await _logger.LogError(ex, contexto, string.Empty), new { accion = contexto, mensajeError = ex.Message });
+                return RedirectToPage(await _logger.LogError(ex, contexto, string.Empty), new { accion = contexto, mensajeError = ex.Message });
             }
+
+            return Page();
         }
     }
 }

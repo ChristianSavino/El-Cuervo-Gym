@@ -43,7 +43,7 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Cobranza
         [BindProperty]
         public CobranzaModel Cobranza { get; set; }
 
-        public async Task OnGet(int socioId)
+        public async Task<IActionResult> OnGet(int socioId)
         {
             try
             {
@@ -67,8 +67,10 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Cobranza
             catch (Exception ex)
             {
                 var contexto = "Alta Cobranza";
-                RedirectToPage(await _logger.LogError(ex, contexto, string.Empty), new { accion = contexto, mensajeError = ex.Message });
+                return RedirectToPage(await _logger.LogError(ex, contexto, string.Empty), new { accion = contexto, mensajeError = ex.Message });
             }
+
+            return Page();
         }
 
         public async Task<IActionResult> OnPost()

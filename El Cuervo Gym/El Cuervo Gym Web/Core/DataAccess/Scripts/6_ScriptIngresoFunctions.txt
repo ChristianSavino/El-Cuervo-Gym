@@ -1,0 +1,70 @@
+-- INSERTAR
+
+DROP FUNCTION IF EXISTS soc.InsertarIngreso;
+CREATE OR REPLACE FUNCTION soc.InsertarIngreso(p_idsocio INT, p_fecha TIMESTAMP, p_estado INT)
+RETURNS INT AS
+$$
+DECLARE
+    v_id_ingreso INT;
+BEGIN
+    INSERT INTO soc.Ingreso (IdSocio, FechaIngreso, Estado)
+    VALUES (p_idsocio, p_fecha, p_estado)
+    RETURNING Id INTO v_id_ingreso;
+
+    RETURN v_id_ingreso;
+END;
+$$ LANGUAGE plpgsql;
+
+-- DAR DE BAJA
+
+DROP FUNCTION IF EXISTS soc.BajaIngreso;
+CREATE OR REPLACE FUNCTION soc.BajaIngreso(p_id INT)
+RETURNS BOOLEAN AS
+$$
+BEGIN
+    UPDATE soc.Ingreso 
+    SET Estado = 2
+    WHERE Id = p_id;
+
+    IF FOUND THEN
+        RETURN TRUE;
+    ELSE
+        RETURN FALSE;
+    END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+-- OBTENER TODOS DIA
+
+DROP FUNCTION IF EXISTS soc.IngresosDia;
+CREATE OR REPLACE FUNCTION soc.IngresosDia(p_fecha TIMESTAMP)
+RETURNS TABLE (Id INT, IdSocio INT, NombreCompleto TEXT, FechaIngreso TIMESTAMP, Estado INT) AS
+$$
+BEGIN
+    RETURN QUERY 
+    SELECT 
+        i.Id,
+        i.IdSocio,
+        s.Nombre || ' ' || s.Apellido AS NombreCompleto,
+        i.FechaIngreso,
+        i.Estado
+    FROM soc.Ingreso i
+    INNER JOIN soc.Socio s ON i.IdSocio = s.Id
+    WHERE i.FechaIngreso::DATE = p_fecha::DATE
+    AND i.Estado = 1
+    ORDER BY i.FechaIngreso DESC;
+END;
+$$ LANGUAGE plpgsql;
+
+-- OBTENER TODOS DIA Y SOCIO
+
+DROP FUNCTION IF EXISTS soc.IngresosDiaSocio;
+CREATE OR REPLACE FUNCTION soc.IngresosDiaSocio(p_fecha TIMESTAMP, p_idsocio INT)
+RETURNS TABLE (Id INT, IdSocio INT, FechaIngreso TIMESTAMP, Estado INT) AS
+$$
+BEGIN
+    RETURN QUERY 
+    SELECT i.* FROM soc.Ingreso i
+    WHERE i.FechaIngreso::DATE = p_fecha::DATE AND i.IdSocio = p_idsocio AND i.Estado = 1;
+END;
+$$ LANGUAGE plpgsql;

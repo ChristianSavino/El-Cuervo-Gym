@@ -1,0 +1,20 @@
+﻿@page "{ingresoId:int}"
+@model El_Cuervo_Gym_Web.Pages.Admin.Ingreso.BajaIngresoModel
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Baja Ingreso";
+}
+
+<div class="container mt-5">
+    <div class="alert alert-success" role="alert">
+        El ingreso ha sido dado de baja correctamente. Redirigiendo al menú...
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        setTimeout(function () {
+            window.location.href = '/Admin/Menu';
+        }, 3000);
+    </script>
+}

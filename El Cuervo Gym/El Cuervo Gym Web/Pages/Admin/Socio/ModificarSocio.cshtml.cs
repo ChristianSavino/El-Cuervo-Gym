@@ -65,7 +65,7 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
 
         public bool OperacionExitosa { get; set; }
 
-        public async Task OnGet(int socioId)
+        public async Task<IActionResult> OnGet(int socioId)
         {
             try
             {
@@ -89,8 +89,10 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
             catch (Exception ex)
             {
                 var contexto = "Modificar Socio";
-                RedirectToPage(await _logger.LogError(ex, contexto, string.Empty), new { accion = contexto, mensajeError = ex.Message });
+                return RedirectToPage(await _logger.LogError(ex, contexto, string.Empty), new { accion = contexto, mensajeError = ex.Message });
             }
+
+            return Page();
         }
 
         public async Task<IActionResult> OnPost()

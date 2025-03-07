@@ -2,6 +2,7 @@ using El_Cuervo_Gym_Web.Core.Admin.Domain;
 using El_Cuervo_Gym_Web.Core.Admin.Logic;
 using El_Cuervo_Gym_Web.Core.Utils;
 using El_Cuervo_Gym_Web.Core.Utils.Logging;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace El_Cuervo_Gym_Web.Pages.Admin.Master
@@ -20,7 +21,7 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Master
         public DatosAdmin Admin { get; set; }
         public bool DadoBaja { get; set; }
 
-        public async Task OnGet(int adminId)
+        public async Task<IActionResult> OnGet(int adminId)
         {
             try
             {
@@ -30,8 +31,10 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Master
             catch (Exception ex)
             {
                 var contexto = "Detalle Admin";
-                RedirectToPage(await _logger.LogError(ex, contexto, string.Empty), new { accion = contexto, mensajeError = ex.Message });
+                return RedirectToPage(await _logger.LogError(ex, contexto, string.Empty), new { accion = contexto, mensajeError = ex.Message });
             }
+
+            return Page();
         }
     }
 }

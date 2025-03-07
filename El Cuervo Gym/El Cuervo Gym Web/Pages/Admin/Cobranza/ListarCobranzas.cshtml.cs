@@ -34,7 +34,7 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Cobranza
         public FiltroModel Filtro { get; set; }
         public List<PagoListado> Cobranzas { get; set; }
 
-        public async Task OnGet()
+        public async Task<IActionResult> OnGet()
         {
             try
             {
@@ -66,8 +66,10 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Cobranza
             catch (Exception ex)
             {
                 var contexto = "Listado de Cobranzas";
-                RedirectToPage(await _logger.LogError(ex, contexto, string.Empty), new { accion = contexto, mensajeError = ex.Message });
+                return RedirectToPage(await _logger.LogError(ex, contexto, string.Empty), new { accion = contexto, mensajeError = ex.Message });
             }
+
+            return Page();
         }
 
         private bool CheckIfFiltroIsEmpty()

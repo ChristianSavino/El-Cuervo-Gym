@@ -25,7 +25,7 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Master
             catch (Exception ex)
             {
                 var contexto = "Baja de Admin";
-                RedirectToPage(await _logger.LogError(ex, contexto, string.Empty), new { accion = contexto, mensajeError = ex.Message });
+                return RedirectToPage(await _logger.LogError(ex, contexto, string.Empty), new { accion = contexto, mensajeError = ex.Message });
             }
 
             return Page();

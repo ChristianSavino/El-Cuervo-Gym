@@ -1,4 +1,6 @@
-using El_Cuervo_Gym_Web.Core.Utils;
+using El_Cuervo_Gym_Web.Core.Ingresos.Domain;
+using El_Cuervo_Gym_Web.Core.Ingresos.Logic;
+using El_Cuervo_Gym_Web.Core.Utils.Logging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -6,24 +8,28 @@ namespace El_Cuervo_Gym_Web.Pages.Admin
 {
     public class MenuModel : PageModel
     {
-        public class SocioIngreso
+        private readonly ICLogger _logger;
+        private readonly IIngresoService _ingresoService;
+
+        public MenuModel(ICLogger logger, IIngresoService ingresoService)
         {
-            public string NombreCompleto { get; set; }
-            public string NumeroSocio { get; set; }
-            public string HorarioIngreso { get; set; }
-            public int Id { get; set; }
+            _logger = logger;
+            _ingresoService = ingresoService;
         }
 
-        public List<SocioIngreso> Socios { get; set; }
+        public IEnumerable<IngresoLista> Ingresos { get; set; }
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGet()
         {
-            Socios = new List<SocioIngreso>
+            try
             {
-                new SocioIngreso { NombreCompleto = "Juan Pérez", NumeroSocio = "12345", HorarioIngreso = "08:00 AM", Id = 1 },
-                new SocioIngreso { NombreCompleto = "María López", NumeroSocio = "67890", HorarioIngreso = "09:30 AM", Id = 2 },
-                new SocioIngreso { NombreCompleto = "Kerubin", NumeroSocio = "181197", HorarioIngreso = "08:43 AM", Id = 3 }
-            };
+                Ingresos = await _ingresoService.ObtenerIngresosEnElDia(DateTime.Now);
+            }
+            catch (Exception ex)
+            {
+                var contexto = "Carga Lista Ingresos Menu";
+                return RedirectToPage(await _logger.LogError(ex, contexto, string.Empty), new { accion = contexto, mensajeError = ex.Message });
+            }
 
             return Page();
         }

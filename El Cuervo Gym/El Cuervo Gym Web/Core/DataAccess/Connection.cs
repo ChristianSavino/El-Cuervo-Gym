@@ -84,12 +84,13 @@ namespace El_Cuervo_Gym_Web.Core.DataAccess
 
         public async Task CorrerTablas()
         {
-            await ExecuteSqlScriptAsync("Core/DataAccess/Scripts/0_ScriptTablas.sql");
-            await ExecuteSqlScriptAsync("Core/DataAccess/Scripts/1_ScriptAdminFunctions.sql");
-            await ExecuteSqlScriptAsync("Core/DataAccess/Scripts/2_ScriptParametroFunctions.sql");
-            await ExecuteSqlScriptAsync("Core/DataAccess/Scripts/3_ScriptErroresFunctions.sql");
-            await ExecuteSqlScriptAsync("Core/DataAccess/Scripts/4_ScriptSocioFunctions.sql");
-            await ExecuteSqlScriptAsync("Core/DataAccess/Scripts/5_ScriptPagoFunctions.sql");
+            await ExecuteSqlScriptAsync("Core/DataAccess/Scripts/0_ScriptTablas.txt");
+            await ExecuteSqlScriptAsync("Core/DataAccess/Scripts/1_ScriptAdminFunctions.txt");
+            await ExecuteSqlScriptAsync("Core/DataAccess/Scripts/2_ScriptParametroFunctions.txt");
+            await ExecuteSqlScriptAsync("Core/DataAccess/Scripts/3_ScriptErroresFunctions.txt");
+            await ExecuteSqlScriptAsync("Core/DataAccess/Scripts/4_ScriptSocioFunctions.txt");
+            await ExecuteSqlScriptAsync("Core/DataAccess/Scripts/5_ScriptPagoFunctions.txt");
+            await ExecuteSqlScriptAsync("Core/DataAccess/Scripts/6_ScriptIngresoFunctions.txt");
         }
     }
 }

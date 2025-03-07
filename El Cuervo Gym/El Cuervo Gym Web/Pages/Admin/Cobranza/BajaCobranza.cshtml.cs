@@ -25,7 +25,7 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Cobranza
             catch (Exception ex)
             {
                 var contexto = "Baja de Cobranza";
-                RedirectToPage(await _logger.LogError(ex, contexto, string.Empty), new { accion = contexto, mensajeError = ex.Message });
+                return RedirectToPage(await _logger.LogError(ex, contexto, string.Empty), new { accion = contexto, mensajeError = ex.Message });
             }
 
             return Page();

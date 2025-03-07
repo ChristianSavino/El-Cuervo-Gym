@@ -1,6 +1,7 @@
 using El_Cuervo_Gym_Web.Core.Cobranza.Logic;
 using El_Cuervo_Gym_Web.Core.Utils;
 using El_Cuervo_Gym_Web.Core.Utils.Logging;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace El_Cuervo_Gym_Web.Pages.Admin.Cobranza
@@ -34,7 +35,7 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Cobranza
         public bool ExistenPagosPosteriores { get; set; }
         public bool DadoBaja { get; set; }
 
-        public async Task OnGet(int cobranzaId)
+        public async Task<IActionResult> OnGet(int cobranzaId)
         {
             try
             {
@@ -63,8 +64,10 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Cobranza
             catch (Exception ex)
             {
                 var contexto = "Detalle de Cobranzas";
-                RedirectToPage(await _logger.LogError(ex, contexto, string.Empty), new { accion = contexto, mensajeError = ex.Message });
-            }         
+                return RedirectToPage(await _logger.LogError(ex, contexto, string.Empty), new { accion = contexto, mensajeError = ex.Message });
+            }
+
+            return Page();
         }
     }
 }

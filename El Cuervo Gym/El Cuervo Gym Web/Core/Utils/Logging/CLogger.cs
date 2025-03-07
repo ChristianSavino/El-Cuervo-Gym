@@ -17,5 +17,11 @@ namespace El_Cuervo_Gym_Web.Core.Utils.Logging
             await _connection.LogError(ex, contexto, extraInfo);
             return "/Admin/Error";
         }
+
+        public async Task<string> LogErrorSocio(Exception ex, string contexto, string extraInfo = "")
+        {
+            await _connection.LogError(ex, contexto, extraInfo);
+            return "/Socio/Error";
+        }
     }
 }

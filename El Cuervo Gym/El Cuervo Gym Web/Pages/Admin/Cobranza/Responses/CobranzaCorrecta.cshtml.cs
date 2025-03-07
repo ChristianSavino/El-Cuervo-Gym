@@ -16,13 +16,3 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Cobranza.Responses
         }
     }
 }
-
-
-
-
-
-
-
-
-
-

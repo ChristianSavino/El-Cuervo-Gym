@@ -33,7 +33,7 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
         public FiltroModel Filtro { get; set; }
         public List<DatosSocio> Socios { get; set; }
 
-        public async Task OnGet()
+        public async Task<IActionResult> OnGet()
         {
             try
             {
@@ -57,8 +57,10 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
             catch (Exception ex)
             {
                 var contexto = "Listado Socios";
-                RedirectToPage(await _logger.LogError(ex, contexto, string.Empty), new { accion = contexto, mensajeError = ex.Message });
+                return RedirectToPage(await _logger.LogError(ex, contexto, string.Empty), new { accion = contexto, mensajeError = ex.Message });
             }
+
+            return Page();
         }
 
         private bool CheckIfFiltroIsEmpty()

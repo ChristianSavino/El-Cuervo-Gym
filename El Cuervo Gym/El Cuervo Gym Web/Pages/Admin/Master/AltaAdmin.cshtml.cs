@@ -61,13 +61,14 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Master
 
                 await _adminService.InsertarAdmin(admin);
                 OperacionExitosa = true;
-                return Page();
             }
             catch (Exception ex)
             {
                 var contexto = "Alta Admin";
                 return RedirectToPage(await _logger.LogError(ex, contexto, string.Empty), new { accion = contexto, mensajeError = ex.Message });
             }
+
+            return Page();
         }
     }
 }

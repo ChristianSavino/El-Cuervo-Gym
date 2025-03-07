@@ -10,29 +10,49 @@
 <body>
     <div class="container mt-5">
         <h2>Lista de Asistencias Hoy</h2>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Nombre Completo</th>
-                    <th>Número de Socio</th>
-                    <th>Horario de Ingreso</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var socio in Model.Socios)
-                {
+        @if (Model.Ingresos != null && Model.Ingresos.Any())
+        {
+            <table class="table table-striped">
+                <thead>
                     <tr>
-                        <td>@socio.NombreCompleto</td>
-                        <td>@socio.NumeroSocio</td>
-                        <td>@socio.HorarioIngreso</td>
-                        <td>
-                            <a href="/Admin/Socio/DetalleSocio/@socio.Id" class="btn btn-dark">Ver Detalles</a>
-                        </td>
+                        <th>Nombre Completo</th>
+                        <th>Número de Socio</th>
+                        <th>Horario de Ingreso</th>
+                        <th>Acciones</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var ingreso in Model.Ingresos)
+                    {
+                        <tr>
+                            <td>@ingreso.NombreCompleto</td>
+                            <td>@ingreso.IdSocio</td>
+                            <td>@ingreso.FechaIngreso</td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <a href="/Admin/Socio/DetalleSocio/@ingreso.Id" class="btn btn-dark">Ver Detalles</a>
+                                    <button class="btn btn-danger" onclick="confirmarBaja(@ingreso.Id)">Dar de Baja</button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>No hay ingresos registrados en el día de hoy.</p>
+        }
     </div>
 </body>
 </html>
+
+@section Scripts {
+    <script>
+        function confirmarBaja(ingresoId) {
+            if (confirm("¿Estás seguro de que deseas dar de baja a este ingreso?")) {
+                window.location.href = '/Admin/Ingreso/BajaIngreso/' + ingresoId;
+            }
+        }
+    </script>
+}
