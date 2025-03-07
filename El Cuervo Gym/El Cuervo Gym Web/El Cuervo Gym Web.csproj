@@ -5,9 +5,11 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>El_Cuervo_Gym_Web</RootNamespace>
+    <ApplicationIcon>wwwroot\logo.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Core\DataAccess\Scripts\" />
     <Folder Include="Pages\Admin\Master\Responses\" />
   </ItemGroup>
 

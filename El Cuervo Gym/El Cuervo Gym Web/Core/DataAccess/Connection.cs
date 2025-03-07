@@ -84,13 +84,15 @@ namespace El_Cuervo_Gym_Web.Core.DataAccess
 
         public async Task CorrerTablas()
         {
-            await ExecuteSqlScriptAsync("Core/DataAccess/Scripts/0_ScriptTablas.txt");
-            await ExecuteSqlScriptAsync("Core/DataAccess/Scripts/1_ScriptAdminFunctions.txt");
-            await ExecuteSqlScriptAsync("Core/DataAccess/Scripts/2_ScriptParametroFunctions.txt");
-            await ExecuteSqlScriptAsync("Core/DataAccess/Scripts/3_ScriptErroresFunctions.txt");
-            await ExecuteSqlScriptAsync("Core/DataAccess/Scripts/4_ScriptSocioFunctions.txt");
-            await ExecuteSqlScriptAsync("Core/DataAccess/Scripts/5_ScriptPagoFunctions.txt");
-            await ExecuteSqlScriptAsync("Core/DataAccess/Scripts/6_ScriptIngresoFunctions.txt");
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "Scripts");
+
+            await ExecuteSqlScriptAsync($"{path}/0_ScriptTablas.txt");
+            await ExecuteSqlScriptAsync($"{path}/1_ScriptAdminFunctions.txt");
+            await ExecuteSqlScriptAsync($"{path}/2_ScriptParametroFunctions.txt");
+            await ExecuteSqlScriptAsync($"{path}/3_ScriptErroresFunctions.txt");
+            await ExecuteSqlScriptAsync($"{path}/4_ScriptSocioFunctions.txt");
+            await ExecuteSqlScriptAsync($"{path}/5_ScriptPagoFunctions.txt");
+            await ExecuteSqlScriptAsync($"{path}/6_ScriptIngresoFunctions.txt");
         }
     }
 }

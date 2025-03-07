@@ -3,9 +3,17 @@ using El_Cuervo_Gym_Web.Core.DataAccess;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var urls = builder.Configuration["Hosting:Urls"];
+
+if (!string.IsNullOrEmpty(urls))
+{
+    builder.WebHost.UseUrls(urls);
+}
+
 Bootstrapper.ConfigureServices(builder.Services, builder.Configuration);
 
 var app = builder.Build();
+
 
 if (!app.Environment.IsDevelopment())
 {
