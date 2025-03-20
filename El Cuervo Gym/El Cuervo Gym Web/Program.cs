@@ -1,9 +1,18 @@
 using El_Cuervo_Gym_Web.Configuration;
 using El_Cuervo_Gym_Web.Core.DataAccess;
+using System.Security.Cryptography.X509Certificates;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var urls = builder.Configuration["Hosting:Urls"];
+var path = Directory.GetCurrentDirectory();
+Console.WriteLine(path);
+var certPath = Path.Combine(path, "Certs", "localhost.pfx");
+var certPassword = "@Keru181197";
+
+var cert = new X509Certificate2(certPath, certPassword);
+var https = urls.Split(";")[1];
+var port = int.Parse(https.Split(":")[2]);
 
 if (!string.IsNullOrEmpty(urls))
 {
@@ -11,6 +20,14 @@ if (!string.IsNullOrEmpty(urls))
 }
 
 Bootstrapper.ConfigureServices(builder.Services, builder.Configuration);
+
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(port, listenOptions =>
+    {
+        listenOptions.UseHttps(cert);
+    });
+});
 
 var app = builder.Build();
 app.UseCookiePolicy();
