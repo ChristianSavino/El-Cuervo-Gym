@@ -6,6 +6,7 @@ using El_Cuervo_Gym_Web.Core.Cobranza.Logic;
 using El_Cuervo_Gym_Web.Core.Socio.Domain;
 using El_Cuervo_Gym_Web.Core.Socio.Logic;
 using El_Cuervo_Gym_Web.Core.Utils;
+using El_Cuervo_Gym_Web.Core.WhatsApp.Logic;
 
 namespace El_Cuervo_Gym_Web.Core.Admin.Logic
 {
@@ -14,12 +15,14 @@ namespace El_Cuervo_Gym_Web.Core.Admin.Logic
         private readonly IAdminDataAccess _dataAccess;
         private readonly ISocioService _socioService;
         private readonly ICobranzaService _cobranzaService;
+        private readonly IWhatsAppService _whatsAppService;
 
-        public AdminService(IAdminDataAccess dataAccess, ISocioService socioService, ICobranzaService cobranzaService)
+        public AdminService(IAdminDataAccess dataAccess, ISocioService socioService, ICobranzaService cobranzaService, IWhatsAppService whatsAppService)
         {
             _dataAccess = dataAccess;
             _socioService = socioService;
             _cobranzaService = cobranzaService;
+            _whatsAppService = whatsAppService;
         }
 
         public async Task<DatosAdminLogin> ObtenerAdmin(string usuario, string password)
@@ -52,6 +55,9 @@ namespace El_Cuervo_Gym_Web.Core.Admin.Logic
             {
                 var pagoId = await _cobranzaService.InsertarCobranzaNuevoSocio(socio);
             }
+
+
+            await _whatsAppService.EnviarMensajeAsync(socio.Telefono.ToString(), socio);
 
             return socio;
         }

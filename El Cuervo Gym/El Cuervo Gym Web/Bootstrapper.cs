@@ -10,6 +10,10 @@ using El_Cuervo_Gym_Web.Core.Parametros.Logic;
 using El_Cuervo_Gym_Web.Core.Socio.DataAccess;
 using El_Cuervo_Gym_Web.Core.Socio.Logic;
 using El_Cuervo_Gym_Web.Core.Utils.Logging;
+using El_Cuervo_Gym_Web.Core.WhatsApp.Domain;
+using El_Cuervo_Gym_Web.Core.WhatsApp.Logic;
+using Microsoft.AspNetCore.DataProtection;
+using System.Security.Cryptography.X509Certificates;
 
 namespace El_Cuervo_Gym_Web.Configuration
 {
@@ -17,6 +21,8 @@ namespace El_Cuervo_Gym_Web.Configuration
     {
         public static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         {
+            services.Configure<WhatsAppSettings>(configuration.GetSection("WhatsAppSettings"));
+
             services.AddScoped<IConnection, Connection>();
             services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IAdminDataAccess, AdminDataAccess>();
@@ -27,17 +33,19 @@ namespace El_Cuervo_Gym_Web.Configuration
             services.AddScoped<ICLogger, CLogger>();
             services.AddScoped<IIngresoDataAccess, IngresoDataAccess>();
             services.AddScoped<IIngresoService, IngresoService>();
+            services.AddHttpClient<IWhatsAppService, WhatsAppService>();
 
             services.AddScoped<IParametrosDataAccess, ParametrosDataAccess>();
             services.AddScoped<IParametros, Parametros>();
-
 
             services.AddRazorPages();
 
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.IdleTimeout = TimeSpan.FromHours(1);
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.SameSite = SameSiteMode.Strict;
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });

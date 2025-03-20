@@ -13,7 +13,8 @@ if (!string.IsNullOrEmpty(urls))
 Bootstrapper.ConfigureServices(builder.Services, builder.Configuration);
 
 var app = builder.Build();
-
+app.UseCookiePolicy();
+app.UseSession();
 
 if (!app.Environment.IsDevelopment())
 {
@@ -28,8 +29,6 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
-app.UseSession();
 
 app.MapRazorPages();
 
