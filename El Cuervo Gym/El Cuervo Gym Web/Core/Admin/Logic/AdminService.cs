@@ -114,7 +114,7 @@ namespace El_Cuervo_Gym_Web.Core.Admin.Logic
         public async Task<DateTime> ReIngresoSocio(int socioId, DateTime fechaCuota, Pago pago)
         {
             var socio = await _socioService.ObtenerSocioPorId(socioId);
-            if(socio.ProximoVencimientoCuota.Date <= fechaCuota.Date)
+            if(socio.ProximoVencimientoCuota.Date >= fechaCuota.Date)
             {
                 throw new Exception("El socio ya ha sido reincorporado o se encuentra al día con las cuotas.");
             }
