@@ -56,7 +56,6 @@ namespace El_Cuervo_Gym_Web.Core.Admin.Logic
                 var pagoId = await _cobranzaService.InsertarCobranzaNuevoSocio(socio);
             }
 
-
             await _whatsAppService.EnviarMensajeAsync(socio.Telefono.ToString(), socio);
 
             return socio;
@@ -110,6 +109,17 @@ namespace El_Cuervo_Gym_Web.Core.Admin.Logic
         public async Task DarDeBajaAdmin(int adminId)
         {
             await _dataAccess.DarDeBajaAdmin(adminId);
+        }
+
+        public async Task<DateTime> ReIngresoSocio(int socioId, DateTime fechaCuota, Pago pago)
+        {
+            var socio = await _socioService.ObtenerSocioPorId(socioId);
+            if(socio.ProximoVencimientoCuota.Date <= fechaCuota.Date)
+            {
+                throw new Exception("El socio ya ha sido reincorporado o se encuentra al día con las cuotas.");
+            }
+
+            return await CobrarSocio(socioId, fechaCuota, pago);
         }
     }
 }

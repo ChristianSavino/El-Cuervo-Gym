@@ -1,0 +1,20 @@
+﻿@page "{nombreCompleto}/{documento:int}/{numeroSocio:int}"
+@model El_Cuervo_Gym_Web.Pages.Admin.Socio.ReingresarSocioModel
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Reingresar Socio";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4">Re-ingreso Realizado Correctamente</h2>
+    <div class="alert alert-success" role="alert">
+        <h4 class="alert-heading">¡Éxito!</h4>
+        <p>El socio ha sido re-ingresado correctamente.</p>
+        <hr>
+        <p class="mb-0"><strong>Nombre Completo:</strong> @Model.NombreCompleto</p>
+        <p class="mb-0"><strong>Documento:</strong> @Model.Documento</p>
+        <p class="mb-0"><strong>Número de Socio:</strong> @Model.NumeroSocio</p>
+        <p class="mb-0"><strong>Próxima Cuota:</strong> @Model.ProximaFechaPago.ToString("yyyy-MM-dd")</p>
+    </div>
+    <a href="/Admin/Menu" class="btn btn-dark">Volver al Menú</a>
+</div>

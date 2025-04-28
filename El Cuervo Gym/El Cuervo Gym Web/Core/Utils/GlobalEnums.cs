@@ -13,7 +13,8 @@
         Transferencia = 3,
         MercadoPago = 4,
         Inicial = 5,
-        Otro = 6
+        Otro = 6,
+        ReIngreso = 7
     }
 
     public enum TipoIngreso

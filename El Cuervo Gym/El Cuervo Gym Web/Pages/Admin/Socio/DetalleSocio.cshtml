@@ -23,6 +23,7 @@
                 <a href="/Admin/Socio/ModificarSocio/@Model.Socio.Id" class="btn btn-primary">Modificar</a>
                 <button class="btn btn-danger" onclick="confirmarBaja(@Model.Socio.Id)" @(Model.DadoBaja ? "disabled" : "")>Dar de Baja</button>
                 <a href="/Admin/Cobranza/AltaCobranza/@Model.Socio.Id" class="btn btn-success">Efectuar Cobranza</a>
+                <button class="btn btn-success" onclick="confirmarReingreso(@Model.Socio.Id)" @(Model.AptoReIngreso ? "" : "disabled")>Re-Ingresar Socio</button>
             </div>
         </div>
     </div>
@@ -60,6 +61,18 @@
         function confirmarBaja(socioId) {
             if (confirm("¿Estás seguro de que deseas dar de baja a este socio?")) {
                 window.location.href = '/Admin/Socio/DarDeBajaSocio/' + socioId;
+            }
+        }
+
+        function confirmarReingreso(socioId) {
+            if (confirm("¿Estás seguro de que deseas reingresar a este socio?")) {
+                const nombreCompleto = encodeURIComponent("@Model.Socio.Nombre @Model.Socio.Apellido");
+                const documento = @Model.Socio.Documento;
+                const numeroSocio = @Model.Socio.Id;
+
+                const url = `/Admin/Socio/ReingresarSocio/${nombreCompleto}/${documento}/${numeroSocio}`;
+
+                window.location.href = url;
             }
         }
     </script>

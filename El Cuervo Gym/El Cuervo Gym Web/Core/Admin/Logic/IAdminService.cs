@@ -17,5 +17,6 @@ namespace El_Cuervo_Gym_Web.Core.Admin.Logic
         Task<DatosAdmin> ObtenerAdminPorId(int adminId);
         Task<bool> ActualizarAdmin(DatosAdmin admin);
         Task DarDeBajaAdmin(int adminId);
+        Task<DateTime> ReIngresoSocio(int socioId, DateTime fechaCuota, Pago pago);
     }
 }

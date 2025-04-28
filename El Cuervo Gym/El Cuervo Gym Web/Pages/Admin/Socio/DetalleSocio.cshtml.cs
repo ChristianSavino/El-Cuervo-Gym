@@ -1,4 +1,6 @@
 using El_Cuervo_Gym_Web.Core.Cobranza.Domain;
+using El_Cuervo_Gym_Web.Core.Ingresos.Domain.Request;
+using El_Cuervo_Gym_Web.Core.Ingresos.Logic;
 using El_Cuervo_Gym_Web.Core.Socio.Logic;
 using El_Cuervo_Gym_Web.Core.Utils;
 using El_Cuervo_Gym_Web.Core.Utils.Logging;
@@ -10,11 +12,13 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
     public class DetalleSocioModel : PageModel
     {
         private readonly ISocioService _socioService;
+        private readonly IIngresoService _ingresoService;
         private readonly ICLogger _logger;
 
-        public DetalleSocioModel(ISocioService socioService, ICLogger logger)
+        public DetalleSocioModel(ISocioService socioService, IIngresoService ingresoService, ICLogger logger)
         {
             _socioService = socioService;
+            _ingresoService = ingresoService;
             _logger = logger;
         }
 
@@ -37,6 +41,7 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
 
         public SocioModel Socio { get; set; }
         public bool DadoBaja { get; set; }
+        public bool AptoReIngreso { get; set; }
 
         public async Task<IActionResult> OnGet(int socioId)
         {
@@ -62,6 +67,23 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
                 };
 
                 DadoBaja = socio.Estado == Estado.Baja;
+
+                var fechaAptoReIngreso = socio.ProximoVencimientoCuota.AddMonths(1).Date;
+
+                if (fechaAptoReIngreso < DateTime.Now)
+                {
+                    var filtroIngreso = new FiltroIngreso
+                    {
+                        FechaInicio = socio.ProximoVencimientoCuota.Date,
+                        FechaFin = fechaAptoReIngreso,
+                        IncluirDadosDeBaja = false,
+                        NumeroSocio = socioId
+                    };
+
+                    var ingresos = await _ingresoService.ObtenerIngresosFiltro(filtroIngreso);
+                    AptoReIngreso = ingresos.Count() == 0;
+                }
+
             }
             catch (Exception ex)
             {

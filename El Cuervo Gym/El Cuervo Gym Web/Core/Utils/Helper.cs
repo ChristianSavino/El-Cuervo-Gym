@@ -17,7 +17,7 @@
                 }
             }
 
-            return proximaCuotaPago;
+            return proximaCuotaPago.Date;
         }
     }
 }
