@@ -8,5 +8,6 @@ namespace El_Cuervo_Gym_Web.Core.Ingresos.Domain
         public int IdSocio { get; set; }
         public DateTime FechaIngreso { get; set; }
         public Estado Estado { get; set; }
+        public TipoIngreso Tipo { get; set; }
     }
 }

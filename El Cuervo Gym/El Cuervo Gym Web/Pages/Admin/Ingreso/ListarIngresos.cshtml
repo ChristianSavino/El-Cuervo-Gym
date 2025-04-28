@@ -1,0 +1,107 @@
+﻿@page
+@model El_Cuervo_Gym_Web.Pages.Admin.Ingreso.ListarIngresosModel
+@using El_Cuervo_Gym_Web.Core.Utils
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Listar Ingresos";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4">Listar Cobranzas</h2>
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="mb-4">
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label for="Nombre">Nombre</label>
+                        <input type="text" class="form-control" id="Nombre" name="Nombre" value="@Model.Filtro.Nombre" />
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="Documento">Documento</label>
+                        <input type="number" class="form-control" id="Documento" name="Documento" value="@Model.Filtro.Documento" />
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="NumeroSocio">Número de Socio</label>
+                        <input type="number" class="form-control" id="NumeroSocio" name="NumeroSocio" value="@Model.Filtro.NumeroSocio" />
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="FechaInicio">Fecha de Ingreso Desde</label>
+                        <input type="date" class="form-control" id="FechaInicio" name="FechaInicio" value="@Model.Filtro.FechaInicio?.ToString("yyyy-MM-dd")" />
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="FechaFin">Fecha de Ingreso Hasta</label>
+                        <input type="date" class="form-control" id="FechaFin" name="FechaFin" value="@Model.Filtro.FechaFin?.ToString("yyyy-MM-dd")" />
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="Tipo">Tipo Ingreso</label>
+                        <select class="form-control" id="Tipo" name="Tipo">
+                            <option value="">Todos</option>
+                            @foreach (var metodo in Enum.GetValues(typeof(TipoIngreso)).Cast<TipoIngreso>())
+                            {
+                                <option value="@((int)metodo)" selected="@(Model.Filtro.Tipo == metodo)">@metodo</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3 align-self-end">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="IncluirDadosDeBaja" name="IncluirDadosDeBaja" value="true" @(Model.Filtro.IncluirDadosDeBaja ? "checked" : "") />
+                            <label class="form-check-label" for="IncluirDadosDeBaja">Incluir Ingresos Dados de Baja</label>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-dark">Filtrar</button>
+            </form>
+        </div>
+    </div>
+
+    <h3 class="mb-3">Ingresos</h3>
+    @if (Model.Ingresos != null && Model.Ingresos.Any())
+    {
+        <p class="mb-2">
+            <strong>Total de Ingresos: </strong> @Model.Ingresos.Count()
+        </p>
+        <table class="table table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Número de Socio</th>
+                    <th>Fecha de Ingreso</th>
+                    <th>Tipo de Ingreso</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ingreso in Model.Ingresos)
+                {
+                    <tr>
+                        <td>@ingreso.NombreCompleto @(ingreso.Estado == Estado.Baja ? "(Baja)" : "")</td>
+                        <td>@ingreso.IdSocio</td>
+                        <td>@ingreso.FechaIngreso.ToString("dd/MM/yyyy")</td>
+                        <td>@ingreso.Tipo</td>
+                        <td>
+                            <a href="/Admin/Socio/DetalleSocio/@ingreso.IdSocio" class="btn btn-dark">Ver Detalles</a>
+                            @if (Model.IsAdminMaster)
+                            {
+                                <button class="btn btn-danger" onclick="confirmarBaja(@ingreso.Id)">Dar de Baja</button>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No hay ingresos registrados que coincidan con los filtros.</p>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function confirmarBaja(ingresoId) {
+            if (confirm("¿Estás seguro de que deseas dar de baja a este ingreso?")) {
+                window.location.href = '/Admin/Ingreso/BajaIngreso/' + ingresoId;
+            }
+        }
+    </script>
+}

@@ -15,4 +15,11 @@
         Inicial = 5,
         Otro = 6
     }
+
+    public enum TipoIngreso
+    {
+        Normal = 1,
+        Alerta = 2,
+        Prohibir = 3
+    }
 }

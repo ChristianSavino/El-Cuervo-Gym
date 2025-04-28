@@ -105,6 +105,7 @@ CREATE TABLE IF NOT EXISTS soc.Ingreso (
     Id SERIAL PRIMARY KEY,
     IdSocio INT NOT NULL,
     FechaIngreso TIMESTAMP NOT NULL,
+    Tipo INT NOT NULL,
     Estado INT NOT NULL
 );
 

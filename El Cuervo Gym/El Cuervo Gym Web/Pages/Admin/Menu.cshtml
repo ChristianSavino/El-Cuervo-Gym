@@ -18,6 +18,7 @@
                         <th>Nombre Completo</th>
                         <th>Número de Socio</th>
                         <th>Horario de Ingreso</th>
+                        <th>Tipo de Ingreso</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -28,10 +29,10 @@
                             <td>@ingreso.NombreCompleto</td>
                             <td>@ingreso.IdSocio</td>
                             <td>@ingreso.FechaIngreso</td>
+                            <td>@ingreso.Tipo.ToString()</td>
                             <td>
                                 <div class="d-flex gap-2">
-                                    <a href="/Admin/Socio/DetalleSocio/@ingreso.Id" class="btn btn-dark">Ver Detalles</a>
-                                    <button class="btn btn-danger" onclick="confirmarBaja(@ingreso.Id)">Dar de Baja</button>
+                                    <a href="/Admin/Socio/DetalleSocio/@ingreso.IdSocio" class="btn btn-dark">Ver Detalles</a>
                                 </div>
                             </td>
                         </tr>
@@ -46,13 +47,3 @@
     </div>
 </body>
 </html>
-
-@section Scripts {
-    <script>
-        function confirmarBaja(ingresoId) {
-            if (confirm("¿Estás seguro de que deseas dar de baja a este ingreso?")) {
-                window.location.href = '/Admin/Ingreso/BajaIngreso/' + ingresoId;
-            }
-        }
-    </script>
-}

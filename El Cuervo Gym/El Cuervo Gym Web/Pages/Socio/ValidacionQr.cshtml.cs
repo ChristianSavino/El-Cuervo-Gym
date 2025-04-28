@@ -49,23 +49,32 @@ namespace El_Cuervo_Gym_Web.Pages.Socio
                 var ingresos = await _ingresoService.ObtenerIngresosEnElDiaSocio(DateTime.Now, socioId);
                 IngresosPrevios = ingresos.Count();
 
-                Alerta = DiasAtraso > 0 || IngresosPrevios > 0;
-                Prohibir = DiasAtraso > parametroMaxDias || IngresosPrevios > 1;
+                var tipoIngreso = TipoIngreso.Normal;
 
-                if (!Prohibir)
+                if(DiasAtraso > 0 || IngresosPrevios > 0)
                 {
-                    var ingreso = new Ingreso
-                    {
-                        FechaIngreso = DateTime.Now,
-                        IdSocio = socioId,
-                        Estado = Estado.Activo
-                    };
+                    Alerta = true;
+                    tipoIngreso = TipoIngreso.Alerta;
+                }
+                
+                if (DiasAtraso > parametroMaxDias || IngresosPrevios > 1)
+                {
+                    Prohibir = true;
+                    tipoIngreso = TipoIngreso.Prohibir;
+                }
 
-                    ingreso.Id = await _ingresoService.InsertarIngreso(ingreso);
-                    if (ingreso.Id == 0)
-                    {
-                        throw new Exception("No se pudo registrar el ingreso");
-                    }
+                var ingreso = new Ingreso
+                {
+                    FechaIngreso = DateTime.Now,
+                    IdSocio = socioId,
+                    Estado = Estado.Activo,
+                    Tipo = tipoIngreso
+                };
+
+                ingreso.Id = await _ingresoService.InsertarIngreso(ingreso);
+                if (ingreso.Id == 0)
+                {
+                    throw new Exception("No se pudo registrar el ingreso");
                 }
             }
             catch (Exception ex)

@@ -1,22 +1,24 @@
-using El_Cuervo_Gym_Web.Core.Cobranza.Domain;
-using El_Cuervo_Gym_Web.Core.Cobranza.Domain.Request;
-using El_Cuervo_Gym_Web.Core.Cobranza.Logic;
+using El_Cuervo_Gym_Web.Core.Admin.Domain;
+using El_Cuervo_Gym_Web.Core.Ingresos.Domain;
+using El_Cuervo_Gym_Web.Core.Ingresos.Domain.Request;
+using El_Cuervo_Gym_Web.Core.Ingresos.Logic;
 using El_Cuervo_Gym_Web.Core.Utils;
 using El_Cuervo_Gym_Web.Core.Utils.Logging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Newtonsoft.Json;
 
-namespace El_Cuervo_Gym_Web.Pages.Admin.Cobranza
+namespace El_Cuervo_Gym_Web.Pages.Admin.Ingreso
 {
-    public class ListarCobranzasModel : PageModel
+    public class ListarIngresosModel : PageModel
     {
-        private readonly ICobranzaService _cobranzaService;
         private readonly ICLogger _logger;
+        private readonly IIngresoService _ingresoService;
 
-        public ListarCobranzasModel(ICobranzaService cobranzaService, ICLogger logger)
+        public ListarIngresosModel(ICLogger logger, IIngresoService ingresoService)
         {
-            _cobranzaService = cobranzaService;
             _logger = logger;
+            _ingresoService = ingresoService;
         }
 
         public class FiltroModel
@@ -27,15 +29,24 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Cobranza
             public DateTime? FechaInicio { get; set; }
             public DateTime? FechaFin { get; set; }
             public bool IncluirDadosDeBaja { get; set; }
-            public TipoPago? MetodoPago { get; set; }
+            public TipoIngreso? Tipo { get; set; }
         }
 
         [BindProperty(SupportsGet = true)]
         public FiltroModel Filtro { get; set; }
-        public List<PagoListado> Cobranzas { get; set; }
+        public bool IsAdminMaster { get; set; }
+        public IEnumerable<IngresoLista> Ingresos { get; set; }
+
 
         public async Task<IActionResult> OnGet()
         {
+            var admin = HttpContext.Session.GetString("Admin");
+            if (admin != null)
+            {
+                var adminJson = JsonConvert.DeserializeObject<DatosAdminLogin>(admin);
+                IsAdminMaster = adminJson.IsMaster;
+            }
+
             try
             {
                 if (CheckIfFiltroIsEmpty())
@@ -43,13 +54,13 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Cobranza
                     Filtro = new FiltroModel()
                     {
                         IncluirDadosDeBaja = false,
-                        FechaInicio = DateTime.Now.AddDays(-7).Date,
+                        FechaInicio = DateTime.Now.Date,
                         FechaFin = DateTime.Now.Date,
-                        MetodoPago = null
+                        Tipo = null
                     };
                 }
 
-                var filtroCobranzas = new FiltroCobranza()
+                var filtroIngreso = new FiltroIngreso()
                 {
                     Nombre = Filtro.Nombre,
                     Documento = Filtro.Documento,
@@ -57,15 +68,14 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Cobranza
                     FechaInicio = Filtro.FechaInicio,
                     FechaFin = Filtro.FechaFin?.AddDays(1),
                     IncluirDadosDeBaja = Filtro.IncluirDadosDeBaja,
-                    MetodoPago = Filtro.MetodoPago
+                    Tipo = Filtro.Tipo
                 };
 
-                var cobranzas = await _cobranzaService.ObtenerCobranzasFiltro(filtroCobranzas);
-                Cobranzas = cobranzas.ToList();
+                Ingresos = await _ingresoService.ObtenerIngresosFiltro(filtroIngreso);
             }
             catch (Exception ex)
             {
-                var contexto = "Listado de Cobranzas";
+                var contexto = "Listado de Ingresos";
                 return RedirectToPage(await _logger.LogError(ex, contexto, string.Empty), new { accion = contexto, mensajeError = ex.Message });
             }
 
@@ -74,7 +84,7 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Cobranza
 
         private bool CheckIfFiltroIsEmpty()
         {
-            return Filtro.Nombre == null && Filtro.Documento == null && Filtro.NumeroSocio == null && Filtro.FechaInicio == null && Filtro.FechaFin == null && Filtro.MetodoPago == null;
+            return Filtro.Nombre == null && Filtro.Documento == null && Filtro.NumeroSocio == null && Filtro.FechaInicio == null && Filtro.FechaFin == null && Filtro.Tipo == null;
         }
     }
 }

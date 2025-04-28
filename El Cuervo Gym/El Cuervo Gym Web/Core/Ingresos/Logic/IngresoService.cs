@@ -1,5 +1,6 @@
 ﻿using El_Cuervo_Gym_Web.Core.Ingresos.DataAccess;
 using El_Cuervo_Gym_Web.Core.Ingresos.Domain;
+using El_Cuervo_Gym_Web.Core.Ingresos.Domain.Request;
 
 namespace El_Cuervo_Gym_Web.Core.Ingresos.Logic
 {
@@ -30,6 +31,11 @@ namespace El_Cuervo_Gym_Web.Core.Ingresos.Logic
         public async Task<IEnumerable<Ingreso>> ObtenerIngresosEnElDiaSocio(DateTime fecha, int idSocio)
         {
             return await _ingresoDataAccess.ObtenerIngresosEnElDiaSocio(fecha, idSocio);
+        }
+
+        public async Task<IEnumerable<IngresoLista>> ObtenerIngresosFiltro(FiltroIngreso filtro)
+        {
+            return await _ingresoDataAccess.ObtenerIngresosFiltro(filtro);
         }
     }
 }

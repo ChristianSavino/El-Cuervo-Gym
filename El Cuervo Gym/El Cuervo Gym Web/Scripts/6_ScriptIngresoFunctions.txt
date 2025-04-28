@@ -1,14 +1,14 @@
 -- INSERTAR
 
 DROP FUNCTION IF EXISTS soc.InsertarIngreso;
-CREATE OR REPLACE FUNCTION soc.InsertarIngreso(p_idsocio INT, p_fecha TIMESTAMP, p_estado INT)
+CREATE OR REPLACE FUNCTION soc.InsertarIngreso(p_idsocio INT, p_fecha TIMESTAMP, p_estado INT, p_tipo INT)
 RETURNS INT AS
 $$
 DECLARE
     v_id_ingreso INT;
 BEGIN
-    INSERT INTO soc.Ingreso (IdSocio, FechaIngreso, Estado)
-    VALUES (p_idsocio, p_fecha, p_estado)
+    INSERT INTO soc.Ingreso (IdSocio, FechaIngreso, Estado, Tipo)
+    VALUES (p_idsocio, p_fecha, p_estado, p_tipo)
     RETURNING Id INTO v_id_ingreso;
 
     RETURN v_id_ingreso;
@@ -38,7 +38,7 @@ $$ LANGUAGE plpgsql;
 
 DROP FUNCTION IF EXISTS soc.IngresosDia;
 CREATE OR REPLACE FUNCTION soc.IngresosDia(p_fecha TIMESTAMP)
-RETURNS TABLE (Id INT, IdSocio INT, NombreCompleto TEXT, FechaIngreso TIMESTAMP, Estado INT) AS
+RETURNS TABLE (Id INT, IdSocio INT, NombreCompleto TEXT, FechaIngreso TIMESTAMP, Tipo INT, Estado INT) AS
 $$
 BEGIN
     RETURN QUERY 
@@ -47,6 +47,7 @@ BEGIN
         i.IdSocio,
         s.Nombre || ' ' || s.Apellido AS NombreCompleto,
         i.FechaIngreso,
+        i.Tipo,
         i.Estado
     FROM soc.Ingreso i
     INNER JOIN soc.Socio s ON i.IdSocio = s.Id
@@ -60,11 +61,62 @@ $$ LANGUAGE plpgsql;
 
 DROP FUNCTION IF EXISTS soc.IngresosDiaSocio;
 CREATE OR REPLACE FUNCTION soc.IngresosDiaSocio(p_fecha TIMESTAMP, p_idsocio INT)
-RETURNS TABLE (Id INT, IdSocio INT, FechaIngreso TIMESTAMP, Estado INT) AS
+RETURNS TABLE (Id INT, IdSocio INT, FechaIngreso TIMESTAMP, Tipo INT, Estado INT) AS
 $$
 BEGIN
     RETURN QUERY 
-    SELECT i.* FROM soc.Ingreso i
+    SELECT         
+        i.Id,
+        i.IdSocio,
+        i.FechaIngreso,
+        i.Tipo,
+        i.Estado FROM soc.Ingreso i
     WHERE i.FechaIngreso::DATE = p_fecha::DATE AND i.IdSocio = p_idsocio AND i.Estado = 1;
+END;
+$$ LANGUAGE plpgsql;
+
+-- OBTENER INGRESOS FILTRADOS
+
+DROP FUNCTION IF EXISTS soc.ObtenerIngresosFiltro;
+CREATE OR REPLACE FUNCTION soc.ObtenerIngresosFiltro(
+    p_nombre TEXT,
+    p_documento INT,
+    p_numero_socio INT,
+    p_fecha_inicio TIMESTAMP,
+    p_fecha_fin TIMESTAMP,
+    p_incluir_dados_de_baja BOOLEAN,
+    p_tipo INT,
+    p_id INT
+)
+RETURNS TABLE (
+    Id INT,
+    IdSocio INT,
+    NombreCompleto TEXT,
+    FechaIngreso TIMESTAMP,
+    Tipo INT,
+    Estado INT
+) AS
+$$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        i.Id,
+        i.IdSocio,
+        s.Nombre || ' ' || s.Apellido AS NombreCompleto,
+        i.FechaIngreso,
+        i.Tipo,
+        i.Estado
+    FROM soc.Ingreso i
+    INNER JOIN soc.Socio s ON i.IdSocio = s.Id
+    WHERE 
+        (p_nombre IS NULL OR (s.Nombre || ' ' || s.Apellido) ILIKE '%' || p_nombre || '%') AND
+        (p_documento IS NULL OR s.Documento = p_documento) AND
+        (p_numero_socio IS NULL OR s.id = p_numero_socio) AND
+        (p_fecha_inicio IS NULL OR i.FechaIngreso >= p_fecha_inicio) AND
+        (p_fecha_fin IS NULL OR i.FechaIngreso < p_fecha_fin) AND
+        (p_incluir_dados_de_baja OR i.Estado = 1) AND
+        (p_tipo IS NULL OR i.Tipo = p_tipo) AND
+        (p_id IS NULL OR i.Id = p_id)
+    ORDER BY i.FechaIngreso DESC;
 END;
 $$ LANGUAGE plpgsql;
