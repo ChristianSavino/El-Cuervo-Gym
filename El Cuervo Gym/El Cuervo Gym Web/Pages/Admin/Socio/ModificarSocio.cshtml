@@ -1,8 +1,19 @@
 ﻿@page "{socioId:int}"
+@using Newtonsoft.Json
+@using El_Cuervo_Gym_Web.Core.Admin.Domain
 @model El_Cuervo_Gym_Web.Pages.Admin.Socio.ModificarSocioModel
 @{
     Layout = "_LayoutAdmin";
     ViewData["Title"] = "Modificar Socio";
+}
+
+@{
+    var adminJson = HttpContext.Session.GetString("Admin");
+    DatosAdminLogin admin = null;
+    if (!string.IsNullOrEmpty(adminJson))
+    {
+        admin = JsonConvert.DeserializeObject<DatosAdminLogin>(adminJson);
+    }
 }
 
 <div class="container mt-5">
@@ -14,7 +25,7 @@
         </div>
         <script>
             setTimeout(function () {
-                window.location.href = '/Admin/Socio/ListarSocio';
+            window.location.href = '/Admin/Socio/ListarSocio';
             }, 3000);
         </script>
     }
@@ -87,6 +98,18 @@
                             <span asp-validation-for="Socio.Estado" class="text-danger"></span>
                         </div>
                     </div>
+                    @if (admin != null && admin.IsMaster)
+                    {
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label asp-for="Socio.FechaProxVencimiento">Fecha Próximo Vencimiento</label>
+                                <input asp-for="Socio.FechaProxVencimiento" class="form-control" type="date" />
+                                <span asp-validation-for="Socio.FechaProxVencimiento" class="text-danger"></span>
+                            </div>
+                        </div>
+                    }
+                    <input type="hidden" asp-for="FechaProxVencimiento" />
+                    <input type="hidden" asp-for="FechaSubscripcion" />
                     <button type="submit" class="btn btn-dark">Guardar Cambios</button>
                 </form>
             </div>

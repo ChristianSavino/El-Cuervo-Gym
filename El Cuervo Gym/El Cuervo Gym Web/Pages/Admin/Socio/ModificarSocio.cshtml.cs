@@ -58,12 +58,20 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
 
             [Required(ErrorMessage = "El campo Estado es obligatorio.")]
             public Estado Estado { get; set; }
+            
+            public DateTime? FechaProxVencimiento { get; set; }
         }
 
         [BindProperty]
         public SocioModel Socio { get; set; }
 
         public bool OperacionExitosa { get; set; }
+
+        [BindProperty]
+        public DateTime FechaProxVencimiento { get; set; }
+
+        [BindProperty]
+        public DateTime FechaSubscripcion { get; set; }
 
         public async Task<IActionResult> OnGet(int socioId)
         {
@@ -83,8 +91,12 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
                     NumeroEmergencia = socio.NumeroEmergencia,
                     ContactoEmergencia = socio.ContactoEmergencia,
                     FechaSubscripcion = socio.FechaSubscripcion,
+                    FechaProxVencimiento = socio.ProximoVencimientoCuota,
                     Estado = socio.Estado
                 };
+
+                FechaProxVencimiento = socio.ProximoVencimientoCuota;
+                FechaSubscripcion = socio.FechaSubscripcion;
             }
             catch (Exception ex)
             {
@@ -119,10 +131,22 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
                     ContactoEmergencia = Socio.ContactoEmergencia,
                     FechaSubscripcion = Socio.FechaSubscripcion,
                     Estado = Socio.Estado,
-                    IdAdmin = admin.Id
+                    IdAdmin = admin.Id,
+                    ProximoVencimientoCuota = Socio.FechaProxVencimiento ?? FechaProxVencimiento,
                 };
 
-                OperacionExitosa = await _adminService.ActualizarSocio(socio);
+                var actualizarFecha = false;
+                if (socio.FechaSubscripcion != FechaSubscripcion)
+                {
+                    socio.ProximoVencimientoCuota = Helper.ObtenerFechaDiaEnMesActual(socio.FechaSubscripcion.Day);
+                    actualizarFecha = true;
+                }
+                else
+                {
+                    actualizarFecha = socio.ProximoVencimientoCuota != FechaProxVencimiento;
+                }
+
+                OperacionExitosa = await _adminService.ActualizarSocio(socio, actualizarFecha);
             }
             catch (Exception ex)
             {

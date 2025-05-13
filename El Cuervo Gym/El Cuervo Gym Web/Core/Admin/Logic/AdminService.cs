@@ -61,10 +61,13 @@ namespace El_Cuervo_Gym_Web.Core.Admin.Logic
             return socio;
         }
 
-        public async Task<bool> ActualizarSocio(DatosSocio socio)
+        public async Task<bool> ActualizarSocio(DatosSocio socio, bool fechaProxVencimientoModificada)
         {
-            var proximaCuotaPago = Helper.ObtenerProximoVencimientoDeCuota(socio.FechaSubscripcion);
-            socio.ProximoVencimientoCuota = proximaCuotaPago;
+            if(fechaProxVencimientoModificada)
+            {
+                var proximaCuotaPago = Helper.ObtenerProximoVencimientoDeCuota(socio.FechaSubscripcion, socio.ProximoVencimientoCuota);
+                socio.ProximoVencimientoCuota = proximaCuotaPago;
+            }
 
             return await _socioService.ActualizarSocio(socio);
         }
