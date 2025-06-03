@@ -22,6 +22,7 @@ namespace El_Cuervo_Gym_Web.Configuration
         public static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<WhatsAppSettings>(configuration.GetSection("WhatsAppSettings"));
+            var allowedOrigins = configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
 
             services.AddScoped<IConnection, Connection>();
             services.AddScoped<IAdminService, AdminService>();
@@ -45,7 +46,7 @@ namespace El_Cuervo_Gym_Web.Configuration
             {
                 options.AddPolicy("AllowGithubPages", policy =>
                 {
-                    policy.WithOrigins("https://cuervogym.github.io")
+                    policy.WithOrigins(allowedOrigins)
                           .AllowAnyHeader()
                           .AllowAnyMethod();
                 });
