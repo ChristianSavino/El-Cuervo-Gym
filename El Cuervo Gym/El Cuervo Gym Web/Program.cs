@@ -48,6 +48,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
+app.UseCors("AllowGithubPages");
+app.MapControllers();
 
 using (var scope = app.Services.CreateScope())
 {

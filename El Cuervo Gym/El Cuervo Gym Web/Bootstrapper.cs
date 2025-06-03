@@ -39,6 +39,17 @@ namespace El_Cuervo_Gym_Web.Configuration
             services.AddScoped<IParametros, Parametros>();
 
             services.AddRazorPages();
+            services.AddControllers();
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowGithubPages", policy =>
+                {
+                    policy.WithOrigins("https://cuervogym.github.io")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
 
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
