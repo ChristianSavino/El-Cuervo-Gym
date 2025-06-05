@@ -1,31 +1,25 @@
 using El_Cuervo_Gym_Web.Configuration;
 using El_Cuervo_Gym_Web.Core.DataAccess;
-using System.Security.Cryptography.X509Certificates;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var urls = builder.Configuration["Hosting:Urls"];
+var ports = builder.Configuration["Hosting:Ports"];
 var path = Directory.GetCurrentDirectory();
-Console.WriteLine(path);
-var certPath = Path.Combine(path, "Certs", "localhost.pfx");
-var certPassword = "@Keru181197";
 
-var cert = new X509Certificate2(certPath, certPassword);
-var https = urls.Split(";")[1];
-var port = int.Parse(https.Split(":")[2]);
+var certPath = Path.Combine(path, "Certs", builder.Configuration["Cert:CertName"]);
+var password = builder.Configuration["Cert:CertPassword"];
 
-if (!string.IsNullOrEmpty(urls))
-{
-    builder.WebHost.UseUrls(urls);
-}
+var portHttp = int.Parse(ports.Split(";")[0]);
+var portHttps = int.Parse(ports.Split(";")[1]);
 
 Bootstrapper.ConfigureServices(builder.Services, builder.Configuration);
 
 builder.WebHost.ConfigureKestrel(options =>
 {
-    options.ListenAnyIP(port, listenOptions =>
+    options.ListenAnyIP(portHttp);
+    options.ListenAnyIP(portHttps, listenOptions =>
     {
-        listenOptions.UseHttps(cert);
+        listenOptions.UseHttps(certPath, password);
     });
 });
 
@@ -48,7 +42,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
-app.UseCors("AllowGithubPages");
 app.MapControllers();
 
 using (var scope = app.Services.CreateScope())
