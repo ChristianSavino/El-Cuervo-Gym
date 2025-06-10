@@ -9,6 +9,7 @@ using El_Cuervo_Gym_Web.Core.Parametros.DataAccess;
 using El_Cuervo_Gym_Web.Core.Parametros.Logic;
 using El_Cuervo_Gym_Web.Core.Socio.DataAccess;
 using El_Cuervo_Gym_Web.Core.Socio.Logic;
+using El_Cuervo_Gym_Web.Core.UPnP;
 using El_Cuervo_Gym_Web.Core.Utils.Logging;
 using El_Cuervo_Gym_Web.Core.WhatsApp.Domain;
 using El_Cuervo_Gym_Web.Core.WhatsApp.Logic;
@@ -48,6 +49,8 @@ namespace El_Cuervo_Gym_Web.Configuration
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
+                
+            services.AddHostedService<UpnpPortForwardingService>();
         }
     }
 }
