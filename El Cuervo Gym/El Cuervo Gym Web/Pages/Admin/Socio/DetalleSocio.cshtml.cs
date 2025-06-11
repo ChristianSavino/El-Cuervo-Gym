@@ -4,6 +4,7 @@ using El_Cuervo_Gym_Web.Core.Ingresos.Logic;
 using El_Cuervo_Gym_Web.Core.Socio.Logic;
 using El_Cuervo_Gym_Web.Core.Utils;
 using El_Cuervo_Gym_Web.Core.Utils.Logging;
+using El_Cuervo_Gym_Web.Core.WhatsApp.Logic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -13,12 +14,14 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
     {
         private readonly ISocioService _socioService;
         private readonly IIngresoService _ingresoService;
+        private readonly IWhatsAppService _whatsAppService;
         private readonly ICLogger _logger;
 
-        public DetalleSocioModel(ISocioService socioService, IIngresoService ingresoService, ICLogger logger)
+        public DetalleSocioModel(ISocioService socioService, IIngresoService ingresoService, IWhatsAppService whatsAppService, ICLogger logger)
         {
             _socioService = socioService;
             _ingresoService = ingresoService;
+            _whatsAppService = whatsAppService;
             _logger = logger;
         }
 
@@ -92,6 +95,16 @@ namespace El_Cuervo_Gym_Web.Pages.Admin.Socio
             }
 
             return Page();
+        }
+
+        public async Task<IActionResult> OnPostEnviarWhatsappAsync(int socioId)
+        {
+            var socio = await _socioService.ObtenerSocioPorId(socioId);
+
+            await _whatsAppService.EnviarMensajeAsync(socio.Telefono.ToString(), socio);
+
+            TempData["MensajeWhatsapp"] = "Mensaje enviado correctamente.";
+            return RedirectToPage(new { socioId });
         }
     }
 }

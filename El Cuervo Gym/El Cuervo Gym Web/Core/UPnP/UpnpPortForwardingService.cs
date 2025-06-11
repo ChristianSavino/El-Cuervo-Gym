@@ -6,17 +6,35 @@ namespace El_Cuervo_Gym_Web.Core.UPnP
     {
         private readonly int _internalPort;
         private readonly int _externalPort;
-        private const string Description = "ElCuervoGym Server";
+        private const string Description = "GymServer";
 
         private NatDevice? _device;
 
         public UpnpPortForwardingService(IConfiguration configuration)
         {
-            var portsString = configuration["Hosting:Ports"];
-            var ports = portsString?.Split(';') ?? new[] { "5000", "7019" };
+            try
+            {
+                var portsString = configuration["Hosting:Ports"];
+                Console.WriteLine($"[INFO] Leyendo puertos de configuración: {portsString}");
 
-            _internalPort = int.Parse(ports[1]);
-            _externalPort = _internalPort;
+                var ports = portsString?.Split(';') ?? Array.Empty<string>();
+
+                if (ports.Length < 2 ||
+                    !int.TryParse(ports[1], out _internalPort) ||
+                    _internalPort < 1 ||
+                    _internalPort > 65535)
+                {
+                    Console.WriteLine("[WARN] Puerto inválido o no especificado. Usando valor por defecto: 7019");
+                    _internalPort = 7019;
+                }
+
+                _externalPort = _internalPort;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] Error al leer configuración de puertos: {ex.Message}. Usando valores por defecto.");
+                _internalPort = _externalPort = 7019;
+            }
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
