@@ -80,5 +80,18 @@ namespace El_Cuervo_Gym_Web.Core.Socio.Logic
 
             throw new Exception("Usuario incorrecto");
         }
+
+        public async Task<DatosSocio> ObtenerSocioPorIdDocumento(int documentoRecuperar)
+        {
+            var socios = await _socioDataAccess.ObtenerSocios(new FiltroSocio() { Documento = documentoRecuperar.ToString() });
+            if (socios.Any())
+            {
+                return socios.First();
+            }
+            else
+            {
+                throw new Exception("No se encontró un socio con ese documento.");
+            }
+        }
     }
 }

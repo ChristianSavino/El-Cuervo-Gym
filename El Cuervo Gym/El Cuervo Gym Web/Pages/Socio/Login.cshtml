@@ -44,6 +44,25 @@
                             </div>
                             <button type="submit" class="btn btn-dark mt-3">Ingresar</button>
                         </form>
+                        <form method="post" asp-page-handler="EnviarWhatsapp" class="mt-3">
+                            <div class="form-group">
+                                <label for="docRecuperar">Documento</label>
+                                <input type="number" class="form-control" id="docRecuperar" name="documentoRecuperar" required placeholder="Ingrese su documento" />
+                            </div>
+                            <button type="submit" class="btn btn-success">Olvidé mi número de socio</button>
+                        </form>
+                        @if (TempData["MensajeWhatsapp"] != null)
+                        {
+                            <div class="alert alert-success mt-2">
+                                @TempData["MensajeWhatsapp"]
+                            </div>
+                        }
+                        @if (TempData["ErrorWhatsapp"] != null)
+                        {
+                            <div class="alert alert-danger mt-2">
+                                @TempData["ErrorWhatsapp"]
+                            </div>
+                        }
                     </div>
                 </div>
             </div>

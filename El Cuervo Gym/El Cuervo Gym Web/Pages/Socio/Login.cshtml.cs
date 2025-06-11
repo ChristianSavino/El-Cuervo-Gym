@@ -1,4 +1,5 @@
 using El_Cuervo_Gym_Web.Core.Socio.Logic;
+using El_Cuervo_Gym_Web.Core.WhatsApp.Logic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
@@ -9,10 +10,12 @@ namespace El_Cuervo_Gym_Web.Pages.User
     public class LoginModel : PageModel
     {
         private readonly ISocioService _socioService;
+        private readonly IWhatsAppService _whatsAppService;
 
-        public LoginModel(ISocioService socioService)
+        public LoginModel(ISocioService socioService, IWhatsAppService whatsAppService)
         {
             _socioService = socioService;
+            _whatsAppService = whatsAppService;
         }
 
         [BindProperty]
@@ -67,6 +70,21 @@ namespace El_Cuervo_Gym_Web.Pages.User
             }
 
             return Page();
+        }
+
+        public async Task<IActionResult> OnPostEnviarWhatsappAsync(int documentoRecuperar)
+        {
+            var socio = await _socioService.ObtenerSocioPorIdDocumento(documentoRecuperar);
+            if (socio == null)
+            {
+                TempData["ErrorWhatsapp"] = "No se encontró un socio con ese documento.";
+                return RedirectToPage();
+            }
+
+            await _whatsAppService.EnviarMensajeAsync(socio.Telefono.ToString(), socio);
+
+            TempData["MensajeWhatsapp"] = "Te enviamos tu número de socio por WhatsApp.";
+            return RedirectToPage();
         }
     }
 }
