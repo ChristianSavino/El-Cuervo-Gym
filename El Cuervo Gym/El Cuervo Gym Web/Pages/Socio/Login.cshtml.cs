@@ -74,16 +74,24 @@ namespace El_Cuervo_Gym_Web.Pages.User
 
         public async Task<IActionResult> OnPostEnviarWhatsappAsync(int documentoRecuperar)
         {
-            var socio = await _socioService.ObtenerSocioPorIdDocumento(documentoRecuperar);
-            if (socio == null)
+            try
             {
-                TempData["ErrorWhatsapp"] = "No se encontró un socio con ese documento.";
-                return RedirectToPage();
+                var socio = await _socioService.ObtenerSocioPorIdDocumento(documentoRecuperar);
+                if (socio == null)
+                {
+                    TempData["ErrorWhatsapp"] = "No se encontró un socio con ese documento.";
+                    return RedirectToPage();
+                }
+
+                await _whatsAppService.EnviarMensajeAsync(socio.Telefono.ToString(), socio);
+
+                TempData["MensajeWhatsapp"] = "Te enviamos tu número de socio por WhatsApp.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorWhatsapp"] = ex.Message;
             }
 
-            await _whatsAppService.EnviarMensajeAsync(socio.Telefono.ToString(), socio);
-
-            TempData["MensajeWhatsapp"] = "Te enviamos tu número de socio por WhatsApp.";
             return RedirectToPage();
         }
     }
